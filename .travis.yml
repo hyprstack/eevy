@@ -1,4 +1,10 @@
 language: go
-
 go:
-  - tip
+- tip
+deploy:
+  provider: releases
+  api_key:
+    secure: XlcvVsuKcfhKYgXLV1YwIP1trBzk8nXPcDVcAX9Q5K8ATsW+JjWjKBrB2YxSsy5cwIDRKhnjU6f3aUQ2UmmZmoLTkkjvVCS8FvSR7OjCfHDwKjtk1tmHQjUNDKfHnMEkCc3ajQ5h+1V3ax8VgKSHfEebl2cZYrN6lYt/Mv+AKbl0CZlHfn7efQTqKc4jlJWyBKAwuwUo4mFzolVl6OFH8uWCqNkOomehPtWIVuK7NumVGPUB7s8JzBgs0UdgJ/hUBFi9P/Lo2NKXMPvyg0MMfGn14ON5qph6J0DTaPbqWLrNaFfwg4sYRC3BrnTjO2GdGFzGpdPRycUIsga7HzWbEGdMShS/9XiPpI223aun/4C/zbM7P/a9m1bivSaGpgKROGESGw6KDPOU+92w7FIZiexTcaX7P+X61oEnzO2MSq3eEGWgfvt8Gs7Xs3rbuES8XHEiUwtm9LoA6AB+LBkm5rYD4xU+bHQpTnefFle5Cfx6eaUVWqNpiaY+yzuSXxhUWcOH9S76F3XtDfZfUzRz69FBGFnxiGNlcpTjkCzCLDzf7fglwlThSFi/DKNW88nVTz28kJdSC6IHBeyW5WrL22FecFtv5o9I+oWkG1IBc4WIzTbtRIkumpv+KfEwkCUxq/FkQd1HDxDEpViCmtHNhtKLUbVxdw9Jh65xRXYgb1U=
+  file: eevy
+  on:
+    repo: hevnly/eevy
