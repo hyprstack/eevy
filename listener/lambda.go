@@ -29,10 +29,7 @@ func (this *Lambda) Exec(evt event.Event) {
 	}
 	_, err := svc.InvokeAsync(params)
 
-	if awserr := aws.Error(err); awserr != nil {
-		gLog.Error(awserr.Error())
-		return
-	} else if err != nil {
+	if err != nil {
 		gLog.Error(err.Error())
 		return
 	}

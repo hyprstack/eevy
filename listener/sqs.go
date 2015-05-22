@@ -27,10 +27,7 @@ func (this *Sqs) Exec(evt event.Event) {
 	}
 	_, err := svc.SendMessage(params)
 
-	if awserr := aws.Error(err); awserr != nil {
-		// A service error occurred.
-		gLog.Error("Error:", awserr.Code, awserr.Message)
-	} else if err != nil {
+	if err != nil {
 		return
 	}
 }

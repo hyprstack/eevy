@@ -1,8 +1,8 @@
 package source
 
 import (
-	"time"
 	"sync"
+	"time"
 
 	"github.com/awslabs/aws-sdk-go/aws"
 	"github.com/awslabs/aws-sdk-go/service/sqs"
@@ -33,23 +33,19 @@ func (s *Sqs) recieve() int {
 	}
 
 	params := &sqs.ReceiveMessageInput{
-		QueueURL: aws.String(s.Url),
+		QueueURL:            aws.String(s.Url),
 		MaxNumberOfMessages: aws.Long(10),
 	}
 	resp, err := s.svc.ReceiveMessage(params)
 
-	if awserr := aws.Error(err); awserr != nil {
-		// An AWS/SQS service error occurred.
-		s.AppLog.Error(err.Error())
-		return 0
-	} else if err != nil {
+	if err != nil {
 		// A non-service error occurred.
 		s.AppLog.Error(err.Error())
 		return 0
 	}
 
 	numMsg := len(resp.Messages)
-	if numMsg == 0	{
+	if numMsg == 0 {
 		return 0
 	}
 
@@ -72,10 +68,7 @@ func (s *Sqs) remove(message *sqs.Message) {
 	}
 	_, err := s.svc.DeleteMessage(params)
 
-	if awserr := aws.Error(err); awserr != nil {
-		// A service error occurred.
-		s.AppLog.Error(err.Error())
-	} else if err != nil {
+	if err != nil {
 		s.AppLog.Error(err.Error())
 	}
 }
