@@ -2,8 +2,8 @@ package mocks
 
 import "github.com/stretchr/testify/mock"
 
-import "hevnly/eevy/event"
-import "hevnly/eevy/config"
+import "github.com/hevnly/eevy/event"
+import "github.com/hevnly/eevy/config"
 
 type Listener struct {
 	mock.Mock

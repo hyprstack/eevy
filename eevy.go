@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"sync"
 
-	"hevnly/eevy/config"
-	"hevnly/eevy/listener"
-	"hevnly/eevy/source"
+	"github.com/hevnly/eevy/config"
+	"github.com/hevnly/eevy/listener"
+	"github.com/hevnly/eevy/source"
 
 	"github.com/op/go-logging"
 	"gopkg.in/yaml.v2"

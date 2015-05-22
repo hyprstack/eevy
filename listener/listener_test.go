@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"hevnly/eevy/event"
-	"hevnly/eevy/listener/mocks"
+	"github.com/hevnly/eevy/event"
+	"github.com/hevnly/eevy/listener/mocks"
 )
 
 func TestStub(t *testing.T) {

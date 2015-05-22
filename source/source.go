@@ -9,9 +9,9 @@ import (
 
 	"github.com/op/go-logging"
 
-	"hevnly/eevy/config"
-	"hevnly/eevy/event"
-	"hevnly/eevy/listener"
+	"github.com/hevnly/eevy/config"
+	"github.com/hevnly/eevy/event"
+	"github.com/hevnly/eevy/listener"
 )
 
 func BuildFromConfig(conf config.Source, rootList *listener.EventListener) *Source {

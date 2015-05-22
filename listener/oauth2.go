@@ -7,8 +7,8 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
-	"hevnly/eevy/config"
-	"hevnly/eevy/event"
+	"github.com/hevnly/eevy/config"
+	"github.com/hevnly/eevy/event"
 )
 
 type OAuth2 struct {

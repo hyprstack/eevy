@@ -7,8 +7,8 @@ import (
 
 	"github.com/op/go-logging"
 
-	"hevnly/eevy/config"
-	"hevnly/eevy/event"
+	"github.com/hevnly/eevy/config"
+	"github.com/hevnly/eevy/event"
 )
 
 type EventListener struct {

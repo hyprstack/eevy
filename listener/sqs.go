@@ -4,8 +4,8 @@ import (
 	"github.com/awslabs/aws-sdk-go/aws"
 	"github.com/awslabs/aws-sdk-go/service/sqs"
 
-	"hevnly/eevy/config"
-	"hevnly/eevy/event"
+	"github.com/hevnly/eevy/config"
+	"github.com/hevnly/eevy/event"
 )
 
 type Sqs struct {
