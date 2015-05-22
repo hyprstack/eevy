@@ -5,7 +5,7 @@ default: all
 all: install test
 
 install: get-deps
-	@go build $(GOFLAGS) ./..
+	@go build $(GOFLAGS) ./
 
 test: install
 	@go test $(GOFLAGS) ./...
