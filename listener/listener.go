@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync"
 
+	"encoding/json"
 	"github.com/op/go-logging"
 
 	"github.com/hevnly/eevy/config"
@@ -42,6 +43,8 @@ func BuildFromConf(conf config.Listener) Listener {
 		list = new(Lambda)
 	case "oauth2":
 		list = new(OAuth2)
+	case "cli":
+		list = new(Cli)
 	}
 	list.Init(conf)
 	return list
@@ -145,9 +148,10 @@ func (this *ListenerBase) magicString(s string, evt event.Event) string {
 		case "message":
 			str := ""
 			if len(opt) <= 1 {
-				str = evt.Message
+				b, _ := json.Marshal(evt.Message)
+				str = string(b)
 			} else {
-				str = evt.Get(strings.Join(opt[1:], "."))
+				str = evt.GetString(strings.Join(opt[1:], "."))
 			}
 			s = strings.Replace(s, v, str, -1)
 		}
@@ -161,8 +165,12 @@ func (this *ListenerBase) findMagicStrings(s string) []string {
 }
 
 func (this *ListenerBase) GetMessage(evt event.Event) string {
-	if this.Message == "" || this.Message == "${message}" {
-		return evt.Message
+	if this.Message == "${message}" {
+		if evt.Message == nil {
+			return ""
+		}
+		b, _ := json.Marshal(evt.Message)
+		return string(b)
 	}
 	return this.magicString(this.Message, evt)
 }

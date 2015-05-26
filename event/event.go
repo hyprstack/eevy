@@ -1,50 +1,58 @@
 package event
 
 import (
-	"encoding/json"
 	"strings"
+
+	"github.com/op/go-logging"
 )
 
 type Event struct {
-	Event    string `json:"event"`
-	Message  string `json:"message,omitempty"`
-	Id       string `json:"id,omitempty"`
-	Error    string `json:"error,omitempty"`
-
-	messageJson MessageObj
+	Event   string                 `json:"event"`
+	Message map[string]interface{} `json:"message,omitempty"`
+	Id      string                 `json:"id,omitempty"`
+	Error   string                 `json:"error,omitempty"`
 }
 
-type MessageObj map[string]interface{}
+var gLog = logging.MustGetLogger("applog")
 
-func (this *Event) MessageJson() MessageObj {
+func (this *Event) Get(s string) interface{} {
 
-	if this.messageJson != nil {
-		return this.messageJson
+	return get(s, this.Message)
+}
+
+func (this *Event) GetString(s string) string {
+
+	val := this.Get(s)
+	r, _ := val.(string)
+	return r
+}
+
+func (this *Event) GetInt(s string) int {
+
+	val := this.Get(s)
+	r, ok := val.(float64)
+	if ok {
+		return int(r)
+	}
+	return 0
+}
+
+func (this *Event) GetFloat(s string) float64 {
+
+	val := this.Get(s)
+	return val.(float64)
+}
+
+func get(s string, val interface{}) interface{} {
+
+	w, ok := val.(map[string]interface{})
+	if !ok {
+		return val
 	}
 
-	rtn := make(MessageObj)
-	json.Unmarshal([]byte(this.Message), &rtn)
-
-	this.messageJson = rtn
-	return rtn
-}
-
-func (this *Event) Get(s string) string {
-
-	msg := this.MessageJson()
-	return msg.get(s)
-}
-
-func (this *MessageObj) get(s string) string {
-
-	opt := strings.Split(s, ".")
-
-	if sub, ok := (*this)[opt[0]]; ok {
-
-		if str, ok := sub.(string); ok {
-			return str
-		}
+	ns := strings.Split(s, ".")
+	if sub, ok := w[ns[0]]; ok {
+		return get(strings.Join(ns[1:], "."), sub)
 	}
-
-	return ""
+	return nil
 }
