@@ -42,6 +42,8 @@ func BuildFromConf(conf config.Listener) Listener {
 		list = new(Lambda)
 	case "oauth2":
 		list = new(OAuth2)
+	case "cli":
+		list = new(Cli)
 	}
 	list.Init(conf)
 	return list
@@ -145,7 +147,7 @@ func (this *ListenerBase) magicString(s string, evt event.Event) string {
 		case "message":
 			str := ""
 			if len(opt) <= 1 {
-				str = evt.Message
+				str = "" //evt.Message
 			} else {
 				str = evt.Get(strings.Join(opt[1:], "."))
 			}
@@ -162,7 +164,7 @@ func (this *ListenerBase) findMagicStrings(s string) []string {
 
 func (this *ListenerBase) GetMessage(evt event.Event) string {
 	if this.Message == "" || this.Message == "${message}" {
-		return evt.Message
+		return "" //evt.Message
 	}
 	return this.magicString(this.Message, evt)
 }

@@ -15,23 +15,28 @@ listeners:
 #      endPoint: ${message.url}
 #      body: ${message.body}
 #      verb: ${message.verb}
-  api.order_created:
-    - type: lambda
-      region: eu-west-1
-      function: test
-      message: '{ "sizes":[
-                    { "width": 800, "height": 800, "name": "large" },
-                    { "width": 500, "height": 500, "name": "medium" },
-                    { "width": 200, "height": 200, "name": "small" },
-                    { "width": 45,  "height": 45,  "name": "thumbnail"}
-                  ],
-                  "file": ${message}
-                }'
-    - type: sqs
-      region: eu-west-1
-      url: https://sqs.eu-west-1.amazonaws.com/193656525156/lambda
-      repeater: true
-  api.testSqs:
-    - type: sqs
-      region: eu-west-1
-      url: https://sqs.eu-west-1.amazonaws.com/193656525156/output
+  # api.order_created:
+  #   - type: lambda
+  #     region: eu-west-1
+  #     function: test
+  #     message: '{ "sizes":[
+  #                   { "width": 800, "height": 800, "name": "large" },
+  #                   { "width": 500, "height": 500, "name": "medium" },
+  #                   { "width": 200, "height": 200, "name": "small" },
+  #                   { "width": 45,  "height": 45,  "name": "thumbnail"}
+  #                 ],
+  #                 "file": ${message}
+  #               }'
+  #   - type: sqs
+  #     region: eu-west-1
+  #     url: https://sqs.eu-west-1.amazonaws.com/193656525156/lambda
+  #     repeater: true
+  # api.testSqs:
+  #   - type: sqs
+  #     region: eu-west-1
+  #     url: https://sqs.eu-west-1.amazonaws.com/193656525156/output
+  test.cli:
+    - type: cli
+      bin: tr
+      args: 
+        - a-z
