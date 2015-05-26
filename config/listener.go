@@ -14,4 +14,5 @@ type Listener struct {
 	Verb         string
 	Bin          string
 	Args         []string
+	Stdin        string
 }
