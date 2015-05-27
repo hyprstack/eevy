@@ -1,3 +1,4 @@
+// Used to mock a listener in unit testing.
 package mocks
 
 import "github.com/stretchr/testify/mock"

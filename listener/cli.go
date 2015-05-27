@@ -9,6 +9,7 @@ import (
 	"github.com/hevnly/eevy/event"
 )
 
+// This listener performs system calls. Perhaps a local binary needs to be called, use this listener.
 type Cli struct {
 	ListenerBase
 
@@ -17,6 +18,7 @@ type Cli struct {
 	Stdin string
 }
 
+// Satisfies the Listener interface and calls the relavent binary file
 func (this *Cli) Exec(evt event.Event) {
 
 	bin := this.magicString(this.Bin, evt)

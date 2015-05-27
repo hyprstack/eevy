@@ -1,3 +1,5 @@
+// Sources are are where events are placed or called from.  They can listen
+// on a specific http port, watch an AWS SQS queue etc
 package source
 
 import (
@@ -14,6 +16,7 @@ import (
 	"github.com/hevnly/eevy/listener"
 )
 
+// Recieve a configuration struct and create the relavent source
 func BuildFromConfig(conf config.Source, rootList *listener.EventListener) *Source {
 
 	appLog := logging.MustGetLogger("applog")
@@ -30,11 +33,14 @@ func BuildFromConfig(conf config.Source, rootList *listener.EventListener) *Sour
 	return &src
 }
 
+// Interface that all sources should satisfy
 type Source interface {
 	Listen(wg sync.WaitGroup)
 	init(log *logging.Logger, conf config.Source, rootList *listener.EventListener)
 }
 
+// Helper struct that performs common functions that most if not all Sources
+// will use
 type Base struct {
 	config.Source
 
@@ -52,6 +58,7 @@ func (s *Base) init(log *logging.Logger, conf config.Source, rootList *listener.
 	s.Listener = rootList
 }
 
+// Convert a raw json string into an Event struct
 func (s *Base) processRaw(msg string) event.Event {
 
 	var evt event.Event
@@ -66,6 +73,7 @@ func (s *Base) processRaw(msg string) event.Event {
 	return evt
 }
 
+// Process the event by running it through the tree structure of listeners
 func (s *Base) processEvent(evt event.Event) {
 
 	s.listLock.Lock()
@@ -73,6 +81,7 @@ func (s *Base) processEvent(evt event.Event) {
 	s.listLock.Unlock()
 }
 
+// Generate an id for a newly created event
 func generateId() string {
 
 	size := 32 // change the length of the generated random string here

@@ -1,3 +1,4 @@
+// Listeners that can be used when events are picked up by any of the sources.
 package listener
 
 import (
@@ -12,6 +13,8 @@ import (
 	"github.com/hevnly/eevy/event"
 )
 
+// Think of this as a collection of listeners grouped by the Event name
+// This also stores all of the child EventListners creating a tree structure
 type EventListener struct {
 	Name      string
 	Listeners []Listener
@@ -34,6 +37,7 @@ type ListenerBase struct {
 
 var gLog = logging.MustGetLogger("applog")
 
+// Recieves a configuration struct and creates the relavent Listener
 func BuildFromConf(conf config.Listener) Listener {
 	var list Listener
 	switch conf.Type {
@@ -50,6 +54,7 @@ func BuildFromConf(conf config.Listener) Listener {
 	return list
 }
 
+// Add the Listener to this EventListener using the supplied event name (evt eg "test.subTest")
 func (l *EventListener) Add(evt string, lst Listener) {
 
 	if evt == "_" {
@@ -102,6 +107,7 @@ func (l *EventListener) Add(evt string, lst Listener) {
 	l.Subset[ns[0]] = &newSub
 }
 
+// Executes the given event.
 func (l *EventListener) Exec(evt event.Event) {
 
 	// work out the event name relative to this listener
@@ -137,6 +143,7 @@ func (l *EventListener) Exec(evt event.Event) {
 	l.subLock.Unlock()
 }
 
+// Replaces variables ("${}") in the string to their actual value
 func (this *ListenerBase) magicString(s string, evt event.Event) string {
 
 	rep := regexp.MustCompile("(\\${|})")
@@ -159,11 +166,13 @@ func (this *ListenerBase) magicString(s string, evt event.Event) string {
 	return s
 }
 
+// Finds all of the ${} in the given string
 func (this *ListenerBase) findMagicStrings(s string) []string {
 	re := regexp.MustCompile("\\${(.*?)}")
 	return re.FindAllString(s, -1)
 }
 
+// Get the value of a given dot seperated key from the event
 func (this *ListenerBase) GetMessage(evt event.Event) string {
 	if this.Message == "${message}" {
 		if evt.Message == nil {
