@@ -10,6 +10,7 @@ import (
 	"github.com/hevnly/eevy/event"
 )
 
+// Executes an AWS Lambda function when relevant event triggered
 type Lambda struct {
 	ListenerBase
 
@@ -17,6 +18,7 @@ type Lambda struct {
 	Function string
 }
 
+// Satifies the Listener interface and calls the Lambda function
 func (this *Lambda) Exec(evt event.Event) {
 
 	gLog.Debug("Lambda %s on event %s", this.Function, evt.Id)

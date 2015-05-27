@@ -1,3 +1,4 @@
+// Events are created by sources when the system they are listening on triger an event.
 package event
 
 import (

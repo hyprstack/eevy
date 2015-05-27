@@ -8,6 +8,7 @@ import (
 	"github.com/hevnly/eevy/event"
 )
 
+// Places a message on an AWS SQS when relavent event is triggered
 type Sqs struct {
 	ListenerBase
 
@@ -15,6 +16,7 @@ type Sqs struct {
 	Region string
 }
 
+// Satisfies the Listener interface and places the event on an AWS SQS
 func (this *Sqs) Exec(evt event.Event) {
 
 	gLog.Debug("SQS %s on event %s", this.Url, evt.Id)

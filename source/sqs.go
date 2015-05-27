@@ -8,24 +8,30 @@ import (
 	"github.com/awslabs/aws-sdk-go/service/sqs"
 )
 
+// Listens to an AWS SQS.  When a message is placed onto this queue it is
+// converted into a Event and assesed by the listeners.  The message must be
+// a JSON string representing an Event
 type Sqs struct {
 	Base
 
 	svc *sqs.SQS
 }
 
+// Satisfies the Source interface.  Beigins listening to an AWS SQS queue.  If no
+// message is on the queue it sleeps for a set period of time before trying again
 func (s *Sqs) Listen(wg sync.WaitGroup) {
 
 	s.AppLog.Info("Start listening (sqs:%s)", s.Url)
 	for {
 		numMsg := s.recieve()
-		if numMsg == 0 {
+		if numMsg == 0 { // if no message sleep for a period of time
 			time.Sleep(5 * time.Second)
 		}
 	}
 	wg.Done()
 }
 
+// Check to see if we have a message on the queue
 func (s *Sqs) recieve() int {
 
 	if s.svc == nil {
@@ -58,6 +64,7 @@ func (s *Sqs) recieve() int {
 	return numMsg
 }
 
+// Remove the processed message from the SQS
 func (s *Sqs) remove(message *sqs.Message) {
 
 	s.AppLog.Info("Deleteing: '%s'", *message.Body)

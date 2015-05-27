@@ -11,6 +11,7 @@ import (
 	"github.com/hevnly/eevy/event"
 )
 
+// Make an http call authnticating via an OAuth2 url
 type OAuth2 struct {
 	ListenerBase
 
@@ -22,9 +23,10 @@ type OAuth2 struct {
 	Verb         string
 }
 
+// Satifies the Listener interface and makes the http call after authenticating
 func (this *OAuth2) Exec(evt event.Event) {
 
-	ep := this.createEndPoint(evt)
+	ep := this.getEndPoint(evt)
 	verb := this.getVerb(evt)
 
 	conf := &clientcredentials.Config{
@@ -58,10 +60,12 @@ func (this *OAuth2) Exec(evt event.Event) {
 	gLog.Debug("OAuth: %s", robots)
 }
 
-func (this *OAuth2) createEndPoint(evt event.Event) string {
+// Gets the end point for this listener
+func (this *OAuth2) getEndPoint(evt event.Event) string {
 	return this.magicString(this.EndPoint, evt)
 }
 
+// Gets the verb to be used in the http call
 func (this *OAuth2) getVerb(evt event.Event) string {
 	return this.magicString(this.Verb, evt)
 }
