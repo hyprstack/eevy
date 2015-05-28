@@ -1,9 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
-	"path/filepath"
 	"sync"
 
 	"github.com/hevnly/eevy/config"
@@ -11,7 +9,6 @@ import (
 	"github.com/hevnly/eevy/source"
 
 	"github.com/op/go-logging"
-	"gopkg.in/yaml.v2"
 )
 
 /**
@@ -19,40 +16,19 @@ import (
  */
 var gLog = logging.MustGetLogger("applog")
 
-func init() {
-	backend1 := logging.NewLogBackend(os.Stderr, "", 0)
-	logging.AddModuleLevel(backend1)
-}
-
-/**
- * Read the configuration file
- */
-var gConfig = config.Config{}
-var gSrc = source.Sqs{}
-
-func init() {
-
-	gLog.Info("Reading config file './conf.yml'")
-
-	filename, _ := filepath.Abs("./conf.yml")
-	yamlFile, err := ioutil.ReadFile(filename)
-	if err != nil {
-		panic(err)
-	}
-
-	err = yaml.Unmarshal(yamlFile, &gConfig)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
 
-	rootListener := buildListeners(&gConfig.Listeners)
+	backend1 := logging.NewLogBackend(os.Stderr, "", 0)
+	logging.AddModuleLevel(backend1)
+
+	c := config.Config{}
+	c.LoadFromFile("./conf.yml")
+
+	rootListener := buildListeners(&c.Listeners)
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go startSources(&gConfig.Sources, rootListener, wg)
+	go startSources(&c.Sources, rootListener, wg)
 	wg.Wait()
 }
 

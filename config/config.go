@@ -3,6 +3,10 @@ package config
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"path/filepath"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -43,4 +47,18 @@ func (this *Listener) String() string {
 
 func (this *Listener) Init(s string) {
 	return
+}
+
+func (this *Config) LoadFromFile(s string) {
+
+	filename, _ := filepath.Abs(s)
+	yamlFile, err := ioutil.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	err = yaml.Unmarshal(yamlFile, &this)
+	if err != nil {
+		panic(err)
+	}
 }
