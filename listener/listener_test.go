@@ -111,14 +111,18 @@ func TestMagicString(t *testing.T) {
 	}
 	json.Unmarshal([]byte(msg), &evt.Message)
 
-	r1 := magicString("${message.testKey}", evt)
-	assert.Equal(t, "testValue", r1, "Ensure message is changed")
-
-	r2 := magicString("${message.testKey}-test.test1", evt)
-	assert.Equal(t, "testValue-test.test1", r2, "Ensure only variable is changed")
-
-	r3 := magicString("${message}", evt)
-	assert.Equal(t, msg, r3, "Ensure entire message is copied")
+	{
+		r := magicString("${message.testKey}", evt)
+		assert.Equal(t, "testValue", r, "Ensure message is changed")
+	}
+	{
+		r := magicString("${message.testKey}-test.test1", evt)
+		assert.Equal(t, "testValue-test.test1", r, "Ensure only variable is changed")
+	}
+	{
+		r := magicString("${message}", evt)
+		assert.Equal(t, msg, r, "Ensure entire message is copied")
+	}
 }
 
 func createRootList() (*EventListener, *map[string]*mocks.Listener) {
