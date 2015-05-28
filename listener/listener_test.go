@@ -96,8 +96,7 @@ func TestExec(t *testing.T) {
 
 func TestGetMagicString(t *testing.T) {
 
-	lb := ListenerBase{}
-	ms := lb.findMagicStrings("${test}(){{{${test2.test3.test-4}..vwvvw")
+	ms := findMagicStrings("${test}(){{{${test2.test3.test-4}..vwvvw")
 	assert.Equal(t, 2, len(ms), "Ensure we get the correct amount of strings")
 
 	assert.Equal(t, "${test}", ms[0], "Check that the first magic string is correct")
@@ -106,57 +105,20 @@ func TestGetMagicString(t *testing.T) {
 
 func TestMagicString(t *testing.T) {
 
-	lb := ListenerBase{}
-
 	msg := "{\"testKey\":\"testValue\"}"
 	evt := event.Event{
 		Event: "test.event",
 	}
 	json.Unmarshal([]byte(msg), &evt.Message)
 
-	r1 := lb.magicString("${message.testKey}", evt)
+	r1 := magicString("${message.testKey}", evt)
 	assert.Equal(t, "testValue", r1, "Ensure message is changed")
 
-	r2 := lb.magicString("${message.testKey}-test.test1", evt)
+	r2 := magicString("${message.testKey}-test.test1", evt)
 	assert.Equal(t, "testValue-test.test1", r2, "Ensure only variable is changed")
 
-	r3 := lb.magicString("${message}", evt)
+	r3 := magicString("${message}", evt)
 	assert.Equal(t, msg, r3, "Ensure entire message is copied")
-}
-
-func TestGetMessage(t *testing.T) {
-
-	lb1 := ListenerBase{}
-	evt1 := event.Event{
-		Event: "test.event",
-	}
-
-	gLog.Debug("****")
-	r1 := lb1.GetMessage(evt1)
-	assert.Equal(t, "", r1, "Empty message body")
-	gLog.Debug("****")
-
-	lb2 := ListenerBase{
-		Message: "${message}",
-	}
-	msg2 := "{\"testKey1\":\"testValue1\"}"
-	evt2 := event.Event{
-		Event: "test.event",
-	}
-	json.Unmarshal([]byte(msg2), &evt2.Message)
-	r2 := lb2.GetMessage(evt2)
-	assert.Equal(t, msg2, r2, "Asses '${message}'")
-
-	msg3 := "{\"testKey3\":\"testValue3\"}"
-	lb3 := ListenerBase{
-		Message: "{${message}}.blah-blah!-{}",
-	}
-	evt3 := event.Event{
-		Event: "test.event",
-	}
-	json.Unmarshal([]byte(msg3), &evt3.Message)
-	r3 := lb3.GetMessage(evt3)
-	assert.Equal(t, "{"+msg3+"}.blah-blah!-{}", r3, "Asses json message body")
 }
 
 func createRootList() (*EventListener, *map[string]*mocks.Listener) {

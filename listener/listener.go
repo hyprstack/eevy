@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"github.com/op/go-logging"
 
-	"github.com/hevnly/eevy/config"
+	listConfig "github.com/hevnly/eevy/config/listener"
 	"github.com/hevnly/eevy/event"
 )
 
@@ -26,32 +26,55 @@ type EventListener struct {
 
 type Listener interface {
 	Exec(evt event.Event)
-	Init(conf config.Listener)
-
-	GetMessage(evt event.Event) string
 }
 
 type ListenerBase struct {
-	Message string
+}
+
+type ListenerConfig interface {
+	GetType() string
+	GetMessage() string
+	String() string
+	Init(s string)
 }
 
 var gLog = logging.MustGetLogger("applog")
 
 // Recieves a configuration struct and creates the relavent Listener
-func BuildFromConf(conf config.Listener) Listener {
-	var list Listener
-	switch conf.Type {
+func BuildFromConf(conf ListenerConfig) Listener {
+
+	var l Listener
+	switch conf.GetType() {
 	case "sqs":
-		list = new(Sqs)
+		tl := new(Sqs)
+		tc := new(listConfig.Sqs)
+		tc.Init(conf.String())
+		tl.Config = tc
+		l = tl
+
 	case "lambda":
-		list = new(Lambda)
+		tl := new(Lambda)
+		tc := new(listConfig.Lambda)
+		tc.Init(conf.String())
+		tl.Config = tc
+		l = tl
+
 	case "oauth2":
-		list = new(OAuth2)
+		tl := new(OAuth2)
+		tc := new(listConfig.OAuth2)
+		tc.Init(conf.String())
+		tl.Config = tc
+		l = tl
+
 	case "cli":
-		list = new(Cli)
+		tl := new(Cli)
+		tc := new(listConfig.Cli)
+		tc.Init(conf.String())
+		tl.Config = tc
+		l = tl
+
 	}
-	list.Init(conf)
-	return list
+	return l
 }
 
 // Add the Listener to this EventListener using the supplied event name (evt eg "test.subTest")
@@ -144,10 +167,10 @@ func (l *EventListener) Exec(evt event.Event) {
 }
 
 // Replaces variables ("${}") in the string to their actual value
-func (this *ListenerBase) magicString(s string, evt event.Event) string {
+func magicString(s string, evt event.Event) string {
 
 	rep := regexp.MustCompile("(\\${|})")
-	rst := this.findMagicStrings(s)
+	rst := findMagicStrings(s)
 	for _, v := range rst {
 		variable := rep.ReplaceAllString(v, "")
 		opt := strings.Split(variable, ".")
@@ -167,19 +190,7 @@ func (this *ListenerBase) magicString(s string, evt event.Event) string {
 }
 
 // Finds all of the ${} in the given string
-func (this *ListenerBase) findMagicStrings(s string) []string {
+func findMagicStrings(s string) []string {
 	re := regexp.MustCompile("\\${(.*?)}")
 	return re.FindAllString(s, -1)
-}
-
-// Get the value of a given dot seperated key from the event
-func (this *ListenerBase) GetMessage(evt event.Event) string {
-	if this.Message == "${message}" {
-		if evt.Message == nil {
-			return ""
-		}
-		b, _ := json.Marshal(evt.Message)
-		return string(b)
-	}
-	return this.magicString(this.Message, evt)
 }

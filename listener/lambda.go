@@ -6,27 +6,35 @@ import (
 	"github.com/awslabs/aws-sdk-go/aws"
 	"github.com/awslabs/aws-sdk-go/service/lambda"
 
-	"github.com/hevnly/eevy/config"
 	"github.com/hevnly/eevy/event"
 )
+
+type LambdaConfig interface {
+	ListenerConfig
+
+	GetFunction() string
+	GetRegion() string
+}
 
 // Executes an AWS Lambda function when relevant event triggered
 type Lambda struct {
 	ListenerBase
 
-	Region   string
-	Function string
+	Config LambdaConfig
 }
 
 // Satifies the Listener interface and calls the Lambda function
 func (this *Lambda) Exec(evt event.Event) {
 
-	gLog.Debug("Lambda %s on event %s", this.Function, evt.Id)
-	msg := this.GetMessage(evt)
+	gLog.Debug("Lambda %s on event %s", this.Config.GetFunction(), evt.Id)
 
-	svc := lambda.New(&aws.Config{Region: this.Region})
+	msg := magicString(this.Config.GetMessage(), evt)
+	reg := magicString(this.Config.GetRegion(), evt)
+	fun := magicString(this.Config.GetFunction(), evt)
+
+	svc := lambda.New(&aws.Config{Region: reg})
 	params := &lambda.InvokeAsyncInput{
-		FunctionName: aws.String(this.Function),
+		FunctionName: aws.String(fun),
 		InvokeArgs:   bytes.NewReader([]byte(msg)),
 	}
 	_, err := svc.InvokeAsync(params)
@@ -35,11 +43,4 @@ func (this *Lambda) Exec(evt event.Event) {
 		gLog.Error(err.Error())
 		return
 	}
-}
-
-func (this *Lambda) Init(conf config.Listener) {
-
-	this.Region = conf.Region
-	this.Function = conf.Function
-	this.Message = conf.Message
 }

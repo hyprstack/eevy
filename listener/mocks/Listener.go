@@ -4,7 +4,6 @@ package mocks
 import "github.com/stretchr/testify/mock"
 
 import "github.com/hevnly/eevy/event"
-import "github.com/hevnly/eevy/config"
 
 type Listener struct {
 	mock.Mock
@@ -12,9 +11,6 @@ type Listener struct {
 
 func (m *Listener) Exec(evt event.Event) {
 	m.Called(evt)
-}
-func (m *Listener) Init(conf config.Listener) {
-	m.Called(conf)
 }
 func (m *Listener) GetMessage(evt event.Event) string {
 	ret := m.Called(evt)

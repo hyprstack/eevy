@@ -56,13 +56,13 @@ func main() {
 	wg.Wait()
 }
 
-func buildListeners(conf *map[string][]config.Listener) *listener.EventListener {
+func buildListeners(conf *config.ListenerList) *listener.EventListener {
 	rootListener := listener.EventListener{}
 	rootListener.Name = ""
-	for evtName, listners := range gConfig.Listeners {
-		for _, listConf := range listners {
+	for evtName, listners := range *conf {
+		for _, l := range listners {
 
-			list := listener.BuildFromConf(listConf)
+			list := listener.BuildFromConf(&l)
 			rootListener.Add(evtName, list)
 		}
 	}

@@ -76,6 +76,17 @@ This listener invokes an AWS Lambda function
 |region  |string| The AWS region it belongs to eg "eu-west-1"  |
 |message |string| The body of the request sent to the listener |
 
+### cli ###
+#### Description ####
+This listener performs a local system call
+#### Config ####
+| Name   | Type | Description                                  |
+| ------ | ---- | -------------------------------------------- |
+|type    |string| This must be set to "lambda"                 |
+|function|string| The name of the function to be invoked       |
+|region  |string| The AWS region it belongs to eg "eu-west-1"  |
+|message |string| The body of the request sent to the listener |
+
 ### OAuth2 ###
 #### Description ####
 Use this listener when sending events to an OAuth 2 end point such as the hevnly api.

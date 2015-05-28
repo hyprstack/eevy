@@ -7,20 +7,26 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
-	"github.com/hevnly/eevy/config"
 	"github.com/hevnly/eevy/event"
 )
+
+type OAuth2Config interface {
+	ListenerConfig
+
+	GetClientId() string
+	GetClientSecret() string
+	GetTokenUrl() string
+	GetScope() []string
+	GetEndPoint() string
+	GetVerb() string
+	GetBody() string
+}
 
 // Make an http call authnticating via an OAuth2 url
 type OAuth2 struct {
 	ListenerBase
 
-	ClientId     string
-	ClientSecret string
-	Scope        []string
-	TokenUrl     string
-	EndPoint     string
-	Verb         string
+	Config OAuth2Config
 }
 
 // Satifies the Listener interface and makes the http call after authenticating
@@ -28,12 +34,16 @@ func (this *OAuth2) Exec(evt event.Event) {
 
 	ep := this.getEndPoint(evt)
 	verb := this.getVerb(evt)
+	cid := magicString(this.Config.GetClientId(), evt)
+	sec := magicString(this.Config.GetClientSecret(), evt)
+	sco := this.Config.GetScope()
+	tul := magicString(this.Config.GetTokenUrl(), evt)
 
 	conf := &clientcredentials.Config{
-		ClientID:     this.ClientId,
-		ClientSecret: this.ClientSecret,
-		Scopes:       this.Scope,
-		TokenURL:     this.TokenUrl,
+		ClientID:     cid,
+		ClientSecret: sec,
+		Scopes:       sco,
+		TokenURL:     tul,
 	}
 	client := conf.Client(oauth2.NoContext)
 
@@ -45,10 +55,11 @@ func (this *OAuth2) Exec(evt event.Event) {
 	case "post":
 		res, err = client.Post(ep, "", nil)
 	default:
-		gLog.Error("Unsupported verb: %s", this.Verb)
+		gLog.Error("Unsupported verb: %s", verb)
 		return
 	}
 	if err != nil {
+		gLog.Error("ep: %s", ep)
 		gLog.Error(err.Error())
 		return
 	}
@@ -62,21 +73,10 @@ func (this *OAuth2) Exec(evt event.Event) {
 
 // Gets the end point for this listener
 func (this *OAuth2) getEndPoint(evt event.Event) string {
-	return this.magicString(this.EndPoint, evt)
+	return magicString(this.Config.GetEndPoint(), evt)
 }
 
 // Gets the verb to be used in the http call
 func (this *OAuth2) getVerb(evt event.Event) string {
-	return this.magicString(this.Verb, evt)
-}
-
-func (this *OAuth2) Init(conf config.Listener) {
-
-	this.ClientId = conf.ClientId
-	this.ClientSecret = conf.ClientSecret
-	this.Scope = conf.Scope
-	this.TokenUrl = conf.TokenUrl
-	this.EndPoint = conf.EndPoint
-	this.Verb = conf.Verb
-	this.Message = conf.Message
+	return magicString(this.Config.GetVerb(), evt)
 }
