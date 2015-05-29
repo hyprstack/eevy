@@ -33,6 +33,22 @@ func BuildFromConfig(conf config.Source, rootList *listener.EventListener) *Sour
 	return &src
 }
 
+// Pass in the source configuration and this function both builds and starts listening to the source
+func StartSources(sourceConf *[]config.Source, rootList *listener.EventListener, wg sync.WaitGroup) {
+
+	var wgLocal sync.WaitGroup
+	var sources []Source
+	for _, conf := range *sourceConf {
+		tmp := *BuildFromConfig(conf, rootList)
+
+		sources = append(sources, tmp)
+		wgLocal.Add(1)
+		go tmp.Listen(wgLocal)
+	}
+	wgLocal.Wait()
+	wg.Done()
+}
+
 // Interface that all sources should satisfy
 type Source interface {
 	Listen(wg sync.WaitGroup)

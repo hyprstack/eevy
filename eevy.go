@@ -28,21 +28,6 @@ func main() {
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go startSources(&c.Sources, rootListener, wg)
+	go source.StartSources(&c.Sources, rootListener, wg)
 	wg.Wait()
-}
-
-func startSources(sourceConf *[]config.Source, rootList *listener.EventListener, wg sync.WaitGroup) {
-
-	var wgLocal sync.WaitGroup
-	var sources []source.Source
-	for _, conf := range *sourceConf {
-		tmp := *source.BuildFromConfig(conf, rootList)
-
-		sources = append(sources, tmp)
-		wgLocal.Add(1)
-		go tmp.Listen(wgLocal)
-	}
-	wgLocal.Wait()
-	wg.Done()
 }
