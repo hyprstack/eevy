@@ -26,7 +26,7 @@ type Lambda struct {
 // Satifies the Listener interface and calls the Lambda function
 func (this *Lambda) Exec(evt event.Event) {
 
-	gLog.Debug("Lambda %s on event %s", this.Config.GetFunction(), evt.Id)
+	this.Log.Listener(this, &evt)
 
 	msg := magicString(this.Config.GetMessage(), evt)
 	reg := magicString(this.Config.GetRegion(), evt)
@@ -40,7 +40,16 @@ func (this *Lambda) Exec(evt event.Event) {
 	_, err := svc.InvokeAsync(params)
 
 	if err != nil {
-		gLog.Error(err.Error())
+		this.Log.Error(err.Error())
 		return
 	}
+}
+
+func (this *Lambda) GetType() string {
+
+	return this.GetConfig().GetType()
+}
+
+func (this *Lambda) GetConfig() ListenerConfig {
+	return this.Config
 }

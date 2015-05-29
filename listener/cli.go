@@ -26,6 +26,8 @@ type Cli struct {
 // Satisfies the Listener interface and calls the relavent binary file
 func (this *Cli) Exec(evt event.Event) {
 
+	this.Log.Listener(this, &evt)
+
 	bin := magicString(this.Config.GetBin(), evt)
 	stdin := magicString(this.Config.GetStdin(), evt)
 	args := append([]string(nil), this.Config.GetArgs()...)
@@ -41,8 +43,16 @@ func (this *Cli) Exec(evt event.Event) {
 
 	err := cmd.Run()
 	if err != nil {
-		gLog.Error("%s: %s", out.String(), err.Error())
+		this.Log.Error("%s: %s", out.String(), err.Error())
 		return
 	}
-	gLog.Debug("%s", out.String())
+}
+
+func (this *Cli) GetType() string {
+
+	return this.GetConfig().GetType()
+}
+
+func (this *Cli) GetConfig() ListenerConfig {
+	return this.Config
 }

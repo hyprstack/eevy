@@ -44,6 +44,14 @@ func (this *Event) GetFloat(s string) float64 {
 	return val.(float64)
 }
 
+func (this *Event) GetName() string {
+	return this.Event
+}
+
+func (this *Event) GetId() string {
+	return this.Id
+}
+
 func get(s string, val interface{}) interface{} {
 
 	w, ok := val.(map[string]interface{})

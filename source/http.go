@@ -47,7 +47,6 @@ func (s *Http) Listen(wg sync.WaitGroup) {
 		defer r.Body.Close()
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			s.AppLog.Debug("%s", err)
 			return http.StatusInternalServerError, []byte{}
 		}
 

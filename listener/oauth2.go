@@ -32,6 +32,8 @@ type OAuth2 struct {
 // Satifies the Listener interface and makes the http call after authenticating
 func (this *OAuth2) Exec(evt event.Event) {
 
+	this.Log.Listener(this, &evt)
+
 	ep := this.getEndPoint(evt)
 	verb := this.getVerb(evt)
 	cid := magicString(this.Config.GetClientId(), evt)
@@ -55,20 +57,20 @@ func (this *OAuth2) Exec(evt event.Event) {
 	case "post":
 		res, err = client.Post(ep, "", nil)
 	default:
-		gLog.Error("Unsupported verb: %s", verb)
+		this.Log.Error("Unsupported verb: %s", verb)
 		return
 	}
 	if err != nil {
-		gLog.Error("ep: %s", ep)
-		gLog.Error(err.Error())
+		this.Log.Error("ep: %s", ep)
+		this.Log.Error(err.Error())
 		return
 	}
 	robots, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
-		gLog.Error(err.Error())
+		this.Log.Error(err.Error())
 	}
-	gLog.Debug("OAuth: %s", robots)
+	this.Log.Debug("OAuth: %s", robots)
 }
 
 // Gets the end point for this listener
@@ -79,4 +81,13 @@ func (this *OAuth2) getEndPoint(evt event.Event) string {
 // Gets the verb to be used in the http call
 func (this *OAuth2) getVerb(evt event.Event) string {
 	return magicString(this.Config.GetVerb(), evt)
+}
+
+func (this *OAuth2) GetType() string {
+
+	return this.GetConfig().GetType()
+}
+
+func (this *OAuth2) GetConfig() ListenerConfig {
+	return this.Config
 }
