@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"github.com/op/go-logging"
 
+	"github.com/hevnly/eevy/config"
 	listConfig "github.com/hevnly/eevy/config/listener"
 	"github.com/hevnly/eevy/event"
 )
@@ -164,6 +165,19 @@ func (l *EventListener) Exec(evt event.Event) {
 		sub.Exec(evt)
 	}
 	l.subLock.Unlock()
+}
+
+func BuildListeners(conf *config.ListenerList) *EventListener {
+	rootListener := EventListener{}
+	rootListener.Name = ""
+	for evtName, listners := range *conf {
+		for _, l := range listners {
+
+			list := BuildFromConf(&l)
+			rootListener.Add(evtName, list)
+		}
+	}
+	return &rootListener
 }
 
 // Replaces variables ("${}") in the string to their actual value

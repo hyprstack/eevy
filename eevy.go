@@ -24,25 +24,12 @@ func main() {
 	c := config.Config{}
 	c.LoadFromFile("./conf.yml")
 
-	rootListener := buildListeners(&c.Listeners)
+	rootListener := listener.BuildListeners(&c.Listeners)
 
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go startSources(&c.Sources, rootListener, wg)
 	wg.Wait()
-}
-
-func buildListeners(conf *config.ListenerList) *listener.EventListener {
-	rootListener := listener.EventListener{}
-	rootListener.Name = ""
-	for evtName, listners := range *conf {
-		for _, l := range listners {
-
-			list := listener.BuildFromConf(&l)
-			rootListener.Add(evtName, list)
-		}
-	}
-	return &rootListener
 }
 
 func startSources(sourceConf *[]config.Source, rootList *listener.EventListener, wg sync.WaitGroup) {
