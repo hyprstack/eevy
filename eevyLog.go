@@ -30,7 +30,11 @@ func NewLogger() *EevyLog {
 
 func (this *EevyLog) buildAppLog() {
 
-	appBe := logging.NewLogBackend(os.Stdout, "", 0)
+	fo, err := os.Create("/var/log/eevy/app.log")
+	if err != nil {
+		return
+	}
+	appBe := logging.NewLogBackend(fo, "", 0)
 	var appFormat = logging.MustStringFormatter(
 		"%{time} %{level} %{message}",
 	)
@@ -42,7 +46,11 @@ func (this *EevyLog) buildAppLog() {
 
 func (this *EevyLog) buildEventLog() {
 
-	evtBe := logging.NewLogBackend(os.Stdout, "", 0)
+	fo, err := os.Create("/var/log/eevy/event.log")
+	if err != nil {
+		return
+	}
+	evtBe := logging.NewLogBackend(fo, "", 0)
 	var evtFormat = logging.MustStringFormatter(
 		"%{time} %{message}",
 	)
@@ -54,7 +62,11 @@ func (this *EevyLog) buildEventLog() {
 
 func (this *EevyLog) buildListenerLog() {
 
-	listBe := logging.NewLogBackend(os.Stdout, "", 0)
+	fo, err := os.Create("/var/log/eevy/listener.log")
+	if err != nil {
+		return
+	}
+	listBe := logging.NewLogBackend(fo, "", 0)
 	var listFormat = logging.MustStringFormatter(
 		"%{time} %{message}",
 	)
