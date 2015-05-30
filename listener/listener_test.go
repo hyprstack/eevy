@@ -23,25 +23,25 @@ func TestAdd(t *testing.T) {
 	rootList.Add("_", &mocks.Listener{})
 	assert.Equal(t, len(rootList.Subset["*"].Listeners), 1, "Adding '_'")
 
-	rootList.Add("*", new(mocks.Listener))
+	rootList.Add("*", &mocks.Listener{})
 	assert.Equal(t, len(rootList.Subset["*"].Listeners), 2, "Adding '*'")
 
-	rootList.Add("test", new(mocks.Listener))
+	rootList.Add("test", &mocks.Listener{})
 	assert.Equal(t, len(rootList.Subset["*"].Listeners), 2, "Adding 'test', check root wildcard")
 	assert.Equal(t, len(rootList.Subset["test"].Listeners), 1, "Adding 'test', check root subset")
 
-	rootList.Add("test.*", new(mocks.Listener))
+	rootList.Add("test.*", &mocks.Listener{})
 	assert.Equal(t, len(rootList.Subset["*"].Listeners), 2, "Adding 'test.*', check root wildcard")
 	assert.Equal(t, len(rootList.Subset["test"].Listeners), 1, "Adding 'test.*', check root subset")
 	assert.Equal(t, len(rootList.Subset["test"].Subset["*"].Listeners), 1, "Adding 'test.*', check subset wildcard")
 
-	rootList.Add("test.sub", new(mocks.Listener))
+	rootList.Add("test.sub", &mocks.Listener{})
 	assert.Equal(t, len(rootList.Subset["*"].Listeners), 2, "Adding 'test.sub', check root wildcard")
 	assert.Equal(t, len(rootList.Subset["test"].Listeners), 1, "Adding 'test.sub', check root subset")
 	assert.Equal(t, len(rootList.Subset["test"].Subset["*"].Listeners), 1, "Adding 'test.sub', check subset wildcard")
 	assert.Equal(t, len(rootList.Subset["test"].Subset["sub"].Listeners), 1, "Adding 'test.sub', check subset sub")
 
-	rootList.Add("test1.*", new(mocks.Listener))
+	rootList.Add("test1.*", &mocks.Listener{})
 	assert.Equal(t, len(rootList.Subset["*"].Listeners), 2, "Adding 'test1.*', check root wildcard")
 	assert.Equal(t, len(rootList.Subset["test"].Listeners), 1, "Adding 'test1.*', check root subset")
 	assert.Equal(t, len(rootList.Subset["test"].Subset["*"].Listeners), 1, "Adding 'test1.*', check subset wildcard")
@@ -131,14 +131,14 @@ func createRootList() (*EventListener, *map[string]*mocks.Listener) {
 	rootList.Name = ""
 
 	l := make(map[string]*mocks.Listener)
-	l["_"] = new(mocks.Listener)
-	l["*"] = new(mocks.Listener)
-	l["test"] = new(mocks.Listener)
-	l["test.*"] = new(mocks.Listener)
-	l["test.sub"] = new(mocks.Listener)
-	l["test.sub."] = new(mocks.Listener)
-	l["test1.*"] = new(mocks.Listener)
-	l["test1"] = new(mocks.Listener)
+	l["_"] = &mocks.Listener{}
+	l["*"] = &mocks.Listener{}
+	l["test"] = &mocks.Listener{}
+	l["test.*"] = &mocks.Listener{}
+	l["test.sub"] = &mocks.Listener{}
+	l["test.sub."] = &mocks.Listener{}
+	l["test1.*"] = &mocks.Listener{}
+	l["test1"] = &mocks.Listener{}
 
 	for name, list := range l {
 		rootList.Add(name, list)
