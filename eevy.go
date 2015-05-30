@@ -1,33 +1,28 @@
 package main
 
 import (
-	"os"
 	"sync"
 
 	"github.com/hevnly/eevy/config"
 	"github.com/hevnly/eevy/listener"
 	"github.com/hevnly/eevy/source"
-
-	"github.com/op/go-logging"
 )
-
-/**
- * Create the loggers
- */
-var gLog = logging.MustGetLogger("applog")
 
 func main() {
 
-	backend1 := logging.NewLogBackend(os.Stderr, "", 0)
-	logging.AddModuleLevel(backend1)
+	confPath := "./conf.yml"
+
+	log := NewLogger()
+
+	log.Info("Reading configuration file %s", confPath)
 
 	c := config.Config{}
-	c.LoadFromFile("./conf.yml")
+	c.LoadFromFile(confPath)
 
-	rootListener := listener.BuildListeners(&c.Listeners)
+	rootListener := listener.BuildListeners(&c.Listeners, log)
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go source.StartSources(&c.Sources, rootListener, wg)
+	go source.StartSources(&c.Sources, rootListener, log, wg)
 	wg.Wait()
 }

@@ -7,11 +7,12 @@ import (
 	"sync"
 
 	"encoding/json"
-	"github.com/op/go-logging"
 
 	"github.com/hevnly/eevy/config"
 	listConfig "github.com/hevnly/eevy/config/listener"
 	"github.com/hevnly/eevy/event"
+	localConfig "github.com/hevnly/eevy/listener/config"
+	"github.com/hevnly/eevy/logger"
 )
 
 // Think of this as a collection of listeners grouped by the Event name
@@ -27,51 +28,41 @@ type EventListener struct {
 
 type Listener interface {
 	Exec(evt event.Event)
+	GetType() string
+	GetConfig() localConfig.Listener
 }
 
 type ListenerBase struct {
+	Log logger.Logger
 }
-
-type ListenerConfig interface {
-	GetType() string
-	GetMessage() string
-	String() string
-	Init(s string)
-}
-
-var gLog = logging.MustGetLogger("applog")
 
 // Recieves a configuration struct and creates the relavent Listener
-func BuildFromConf(conf ListenerConfig) Listener {
+func BuildFromConf(conf localConfig.Listener, log logger.Logger) Listener {
 
 	var l Listener
 	switch conf.GetType() {
 	case "sqs":
-		tl := new(Sqs)
-		tc := new(listConfig.Sqs)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &Sqs{Config: &listConfig.Sqs{}}
+		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	case "lambda":
-		tl := new(Lambda)
-		tc := new(listConfig.Lambda)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &Lambda{Config: &listConfig.Lambda{}}
+		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	case "oauth2":
-		tl := new(OAuth2)
-		tc := new(listConfig.OAuth2)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &OAuth2{Config: &listConfig.OAuth2{}}
+		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	case "cli":
-		tl := new(Cli)
-		tc := new(listConfig.Cli)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &Cli{Config: &listConfig.Cli{}}
+		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	}
@@ -146,6 +137,7 @@ func (l *EventListener) Exec(evt event.Event) {
 	}
 	// execute the wildcard listeners
 	if sub, ok := l.Subset["*"]; ok {
+
 		sub.Exec(evt)
 	}
 
@@ -167,13 +159,13 @@ func (l *EventListener) Exec(evt event.Event) {
 	l.subLock.Unlock()
 }
 
-func BuildListeners(conf *config.ListenerList) *EventListener {
+func BuildListeners(conf *config.ListenerList, log logger.Logger) *EventListener {
 	rootListener := EventListener{}
 	rootListener.Name = ""
 	for evtName, listners := range *conf {
 		for _, l := range listners {
 
-			list := BuildFromConf(&l)
+			list := BuildFromConf(&l, log)
 			rootListener.Add(evtName, list)
 		}
 	}

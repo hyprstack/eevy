@@ -5,31 +5,24 @@ import (
 	"github.com/awslabs/aws-sdk-go/service/sqs"
 
 	"github.com/hevnly/eevy/event"
+	"github.com/hevnly/eevy/listener/config"
 )
-
-type SqsConfig interface {
-	ListenerConfig
-
-	GetUrl() string
-	GetRegion() string
-}
 
 // Places a message on an AWS SQS when relavent event is triggered
 type Sqs struct {
 	ListenerBase
 
-	Config SqsConfig
+	Config config.Sqs
 }
 
 // Satisfies the Listener interface and places the event on an AWS SQS
 func (this *Sqs) Exec(evt event.Event) {
 
-	gLog.Debug("SQS %s on event %s", this.Config.GetUrl(), evt.Id)
+	this.Log.Listener(this, &evt)
 
 	url := magicString(this.Config.GetUrl(), evt)
 	reg := magicString(this.Config.GetRegion(), evt)
 	msg := magicString(this.Config.GetMessage(), evt)
-	gLog.Debug("debug: %s", url)
 	svc := sqs.New(&aws.Config{Region: reg})
 	params := &sqs.SendMessageInput{
 		MessageBody: aws.String(msg),
@@ -38,7 +31,16 @@ func (this *Sqs) Exec(evt event.Event) {
 	_, err := svc.SendMessage(params)
 
 	if err != nil {
-		gLog.Error(err.Error())
+		this.Log.Error(err.Error())
 		return
 	}
+}
+
+func (this *Sqs) GetType() string {
+
+	return this.GetConfig().GetType()
+}
+
+func (this *Sqs) GetConfig() config.Listener {
+	return this.Config
 }

@@ -21,7 +21,7 @@ type Sqs struct {
 // message is on the queue it sleeps for a set period of time before trying again
 func (s *Sqs) Listen(wg sync.WaitGroup) {
 
-	s.AppLog.Info("Start listening (sqs:%s)", s.Url)
+	s.Log.Info("Start listening (sqs:%s)", s.Url)
 	for {
 		numMsg := s.recieve()
 		if numMsg == 0 { // if no message sleep for a period of time
@@ -46,7 +46,7 @@ func (s *Sqs) recieve() int {
 
 	if err != nil {
 		// A non-service error occurred.
-		s.AppLog.Error(err.Error())
+		s.Log.Error(err.Error())
 		return 0
 	}
 
@@ -55,7 +55,6 @@ func (s *Sqs) recieve() int {
 		return 0
 	}
 
-	s.AppLog.Info("Recieved %d messages", numMsg)
 	for _, element := range resp.Messages {
 		s.processRaw(*element.Body)
 		s.remove(element)
@@ -67,8 +66,6 @@ func (s *Sqs) recieve() int {
 // Remove the processed message from the SQS
 func (s *Sqs) remove(message *sqs.Message) {
 
-	s.AppLog.Info("Deleteing: '%s'", *message.Body)
-
 	params := &sqs.DeleteMessageInput{
 		QueueURL:      aws.String(s.Url),
 		ReceiptHandle: message.ReceiptHandle,
@@ -76,6 +73,6 @@ func (s *Sqs) remove(message *sqs.Message) {
 	_, err := s.svc.DeleteMessage(params)
 
 	if err != nil {
-		s.AppLog.Error(err.Error())
+		s.Log.Error(err.Error())
 	}
 }

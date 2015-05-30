@@ -20,7 +20,7 @@ func TestAdd(t *testing.T) {
 	rootList := EventListener{}
 	rootList.Name = ""
 
-	rootList.Add("_", new(mocks.Listener))
+	rootList.Add("_", &mocks.Listener{})
 	assert.Equal(t, len(rootList.Subset["*"].Listeners), 1, "Adding '_'")
 
 	rootList.Add("*", new(mocks.Listener))
