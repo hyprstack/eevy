@@ -8,25 +8,14 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/hevnly/eevy/event"
+	"github.com/hevnly/eevy/listener/config"
 )
-
-type OAuth2Config interface {
-	ListenerConfig
-
-	GetClientId() string
-	GetClientSecret() string
-	GetTokenUrl() string
-	GetScope() []string
-	GetEndPoint() string
-	GetVerb() string
-	GetBody() string
-}
 
 // Make an http call authnticating via an OAuth2 url
 type OAuth2 struct {
 	ListenerBase
 
-	Config OAuth2Config
+	Config config.OAuth2
 }
 
 // Satifies the Listener interface and makes the http call after authenticating
@@ -88,6 +77,6 @@ func (this *OAuth2) GetType() string {
 	return this.GetConfig().GetType()
 }
 
-func (this *OAuth2) GetConfig() ListenerConfig {
+func (this *OAuth2) GetConfig() config.Listener {
 	return this.Config
 }

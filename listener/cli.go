@@ -6,21 +6,14 @@ import (
 	"strings"
 
 	"github.com/hevnly/eevy/event"
+	"github.com/hevnly/eevy/listener/config"
 )
-
-type CliConfig interface {
-	ListenerConfig
-
-	GetBin() string
-	GetArgs() []string
-	GetStdin() string
-}
 
 // This listener performs system calls. Perhaps a local binary needs to be called, use this listener.
 type Cli struct {
 	ListenerBase
 
-	Config CliConfig
+	Config config.Cli
 }
 
 // Satisfies the Listener interface and calls the relavent binary file
@@ -53,6 +46,6 @@ func (this *Cli) GetType() string {
 	return this.GetConfig().GetType()
 }
 
-func (this *Cli) GetConfig() ListenerConfig {
+func (this *Cli) GetConfig() config.Listener {
 	return this.Config
 }

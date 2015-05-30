@@ -11,6 +11,7 @@ import (
 	"github.com/hevnly/eevy/config"
 	listConfig "github.com/hevnly/eevy/config/listener"
 	"github.com/hevnly/eevy/event"
+	localConfig "github.com/hevnly/eevy/listener/config"
 	"github.com/hevnly/eevy/logger"
 )
 
@@ -28,22 +29,15 @@ type EventListener struct {
 type Listener interface {
 	Exec(evt event.Event)
 	GetType() string
-	GetConfig() ListenerConfig
+	GetConfig() localConfig.Listener
 }
 
 type ListenerBase struct {
 	Log logger.Logger
 }
 
-type ListenerConfig interface {
-	GetType() string
-	GetMessage() string
-	String() string
-	Init(s string)
-}
-
 // Recieves a configuration struct and creates the relavent Listener
-func BuildFromConf(conf ListenerConfig, log logger.Logger) Listener {
+func BuildFromConf(conf localConfig.Listener, log logger.Logger) Listener {
 
 	var l Listener
 	switch conf.GetType() {
