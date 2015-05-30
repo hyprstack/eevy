@@ -9,17 +9,14 @@ import (
 
 	"encoding/json"
 
-	"github.com/op/go-logging"
-
 	"github.com/hevnly/eevy/config"
 	"github.com/hevnly/eevy/event"
 	"github.com/hevnly/eevy/listener"
+	"github.com/hevnly/eevy/logger"
 )
 
 // Recieve a configuration struct and create the relavent source
-func BuildFromConfig(conf config.Source, rootList *listener.EventListener) *Source {
-
-	appLog := logging.MustGetLogger("applog")
+func BuildFromConfig(conf config.Source, rootList *listener.EventListener, log logger.Logger) Source {
 
 	var src Source
 	switch conf.Type {
@@ -28,18 +25,18 @@ func BuildFromConfig(conf config.Source, rootList *listener.EventListener) *Sour
 	case "sqs":
 		src = new(Sqs)
 	}
-	src.init(appLog, conf, rootList)
+	src.init(log, conf, rootList)
 
-	return &src
+	return src
 }
 
 // Pass in the source configuration and this function both builds and starts listening to the source
-func StartSources(sourceConf *[]config.Source, rootList *listener.EventListener, wg sync.WaitGroup) {
+func StartSources(sourceConf *[]config.Source, rootList *listener.EventListener, log logger.Logger, wg sync.WaitGroup) {
 
 	var wgLocal sync.WaitGroup
 	var sources []Source
 	for _, conf := range *sourceConf {
-		tmp := *BuildFromConfig(conf, rootList)
+		tmp := BuildFromConfig(conf, rootList, log)
 
 		sources = append(sources, tmp)
 		wgLocal.Add(1)
@@ -52,7 +49,7 @@ func StartSources(sourceConf *[]config.Source, rootList *listener.EventListener,
 // Interface that all sources should satisfy
 type Source interface {
 	Listen(wg sync.WaitGroup)
-	init(log *logging.Logger, conf config.Source, rootList *listener.EventListener)
+	init(log logger.Logger, conf config.Source, rootList *listener.EventListener)
 }
 
 // Helper struct that performs common functions that most if not all Sources
@@ -63,11 +60,11 @@ type Base struct {
 	Listener *listener.EventListener
 	listLock sync.Mutex
 
-	AppLog *logging.Logger
+	Log logger.Logger
 }
 
-func (s *Base) init(log *logging.Logger, conf config.Source, rootList *listener.EventListener) {
-	s.AppLog = log
+func (s *Base) init(log logger.Logger, conf config.Source, rootList *listener.EventListener) {
+	s.Log = log
 	s.Url = conf.Url
 	s.Region = conf.Region
 	s.Port = conf.Port
@@ -79,11 +76,11 @@ func (s *Base) processRaw(msg string) event.Event {
 
 	var evt event.Event
 	if err := json.Unmarshal([]byte(msg), &evt); err != nil {
-		s.AppLog.Error("Can not turn string into event: %s", msg)
+		s.Log.Error("Can not turn string into event: %s", msg)
 		return evt
 	}
 	evt.Id = generateId()
-	s.AppLog.Info("Event created. Id=%s event=%s", evt.Id, evt.Event)
+	s.Log.Event(&evt)
 	s.processEvent(evt)
 
 	return evt

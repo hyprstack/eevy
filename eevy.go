@@ -10,15 +10,19 @@ import (
 
 func main() {
 
+	confPath := "./conf.yml"
+
 	log := NewLogger()
 
+	log.Info("Reading configuration file %s", confPath)
+
 	c := config.Config{}
-	c.LoadFromFile("./conf.yml")
+	c.LoadFromFile(confPath)
 
 	rootListener := listener.BuildListeners(&c.Listeners, log)
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go source.StartSources(&c.Sources, rootListener, wg)
+	go source.StartSources(&c.Sources, rootListener, log, wg)
 	wg.Wait()
 }
