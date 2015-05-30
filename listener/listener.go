@@ -48,35 +48,27 @@ func BuildFromConf(conf ListenerConfig, log logger.Logger) Listener {
 	var l Listener
 	switch conf.GetType() {
 	case "sqs":
-		tl := new(Sqs)
-		tc := new(listConfig.Sqs)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &Sqs{Config: &listConfig.Sqs{}}
 		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	case "lambda":
-		tl := new(Lambda)
-		tc := new(listConfig.Lambda)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &Lambda{Config: &listConfig.Lambda{}}
 		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	case "oauth2":
-		tl := new(OAuth2)
-		tc := new(listConfig.OAuth2)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &OAuth2{Config: &listConfig.OAuth2{}}
 		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	case "cli":
-		tl := new(Cli)
-		tc := new(listConfig.Cli)
-		tc.Init(conf.String())
-		tl.Config = tc
+		tl := &Cli{Config: &listConfig.Cli{}}
 		tl.Log = log
+		tl.Config.Init(conf.String())
 		l = tl
 
 	}

@@ -21,9 +21,9 @@ func BuildFromConfig(conf config.Source, rootList *listener.EventListener, log l
 	var src Source
 	switch conf.Type {
 	case "http":
-		src = new(Http)
+		src = &Http{}
 	case "sqs":
-		src = new(Sqs)
+		src = &Sqs{}
 	}
 	src.init(log, conf, rootList)
 
