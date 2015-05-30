@@ -19,3 +19,11 @@ func (m *Listener) GetMessage(evt event.Event) string {
 
 	return r0
 }
+func (m *Listener) GetConfig() ListenerConfig {
+
+	ret := m.Called()
+
+	r0 := ret.Get(0).(ListenerConfig)
+
+	return r0
+}
