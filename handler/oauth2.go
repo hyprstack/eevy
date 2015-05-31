@@ -1,4 +1,4 @@
-package listener
+package handler
 
 import (
 	"io/ioutil"
@@ -8,12 +8,12 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 
 	"github.com/hevnly/eevy/event"
-	"github.com/hevnly/eevy/listener/config"
+	"github.com/hevnly/eevy/handler/config"
 )
 
 // Make an http call authnticating via an OAuth2 url
 type OAuth2 struct {
-	ListenerBase
+	HandlerBase
 
 	Config config.OAuth2
 }
@@ -21,7 +21,7 @@ type OAuth2 struct {
 // Satifies the Listener interface and makes the http call after authenticating
 func (this *OAuth2) Exec(evt event.Event) {
 
-	this.Log.Listener(this, &evt)
+	this.Log.Handler(this, &evt)
 
 	ep := this.getEndPoint(evt)
 	verb := this.getVerb(evt)
@@ -77,6 +77,6 @@ func (this *OAuth2) GetType() string {
 	return this.GetConfig().GetType()
 }
 
-func (this *OAuth2) GetConfig() config.Listener {
+func (this *OAuth2) GetConfig() config.Handler {
 	return this.Config
 }

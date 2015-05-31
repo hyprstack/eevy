@@ -1,16 +1,16 @@
-package listener
+package handler
 
 import (
 	"github.com/awslabs/aws-sdk-go/aws"
 	"github.com/awslabs/aws-sdk-go/service/sqs"
 
 	"github.com/hevnly/eevy/event"
-	"github.com/hevnly/eevy/listener/config"
+	"github.com/hevnly/eevy/handler/config"
 )
 
 // Places a message on an AWS SQS when relavent event is triggered
 type Sqs struct {
-	ListenerBase
+	HandlerBase
 
 	Config config.Sqs
 }
@@ -18,7 +18,7 @@ type Sqs struct {
 // Satisfies the Listener interface and places the event on an AWS SQS
 func (this *Sqs) Exec(evt event.Event) {
 
-	this.Log.Listener(this, &evt)
+	this.Log.Handler(this, &evt)
 
 	url := magicString(this.Config.GetUrl(), evt)
 	reg := magicString(this.Config.GetRegion(), evt)
@@ -41,6 +41,6 @@ func (this *Sqs) GetType() string {
 	return this.GetConfig().GetType()
 }
 
-func (this *Sqs) GetConfig() config.Listener {
+func (this *Sqs) GetConfig() config.Handler {
 	return this.Config
 }

@@ -1,4 +1,4 @@
-package listener
+package handler
 
 import (
 	"bytes"
@@ -7,12 +7,12 @@ import (
 	"github.com/awslabs/aws-sdk-go/service/lambda"
 
 	"github.com/hevnly/eevy/event"
-	"github.com/hevnly/eevy/listener/config"
+	"github.com/hevnly/eevy/handler/config"
 )
 
 // Executes an AWS Lambda function when relevant event triggered
 type Lambda struct {
-	ListenerBase
+	HandlerBase
 
 	Config config.Lambda
 }
@@ -20,7 +20,7 @@ type Lambda struct {
 // Satifies the Listener interface and calls the Lambda function
 func (this *Lambda) Exec(evt event.Event) {
 
-	this.Log.Listener(this, &evt)
+	this.Log.Handler(this, &evt)
 
 	msg := magicString(this.Config.GetMessage(), evt)
 	reg := magicString(this.Config.GetRegion(), evt)
@@ -44,6 +44,6 @@ func (this *Lambda) GetType() string {
 	return this.GetConfig().GetType()
 }
 
-func (this *Lambda) GetConfig() config.Listener {
+func (this *Lambda) GetConfig() config.Handler {
 	return this.Config
 }

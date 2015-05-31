@@ -1,4 +1,4 @@
-package listener
+package handler
 
 import (
 	"bytes"
@@ -6,12 +6,12 @@ import (
 	"strings"
 
 	"github.com/hevnly/eevy/event"
-	"github.com/hevnly/eevy/listener/config"
+	"github.com/hevnly/eevy/handler/config"
 )
 
 // This listener performs system calls. Perhaps a local binary needs to be called, use this listener.
 type Cli struct {
-	ListenerBase
+	HandlerBase
 
 	Config config.Cli
 }
@@ -19,7 +19,7 @@ type Cli struct {
 // Satisfies the Listener interface and calls the relavent binary file
 func (this *Cli) Exec(evt event.Event) {
 
-	this.Log.Listener(this, &evt)
+	this.Log.Handler(this, &evt)
 
 	bin := magicString(this.Config.GetBin(), evt)
 	stdin := magicString(this.Config.GetStdin(), evt)
@@ -46,6 +46,6 @@ func (this *Cli) GetType() string {
 	return this.GetConfig().GetType()
 }
 
-func (this *Cli) GetConfig() config.Listener {
+func (this *Cli) GetConfig() config.Handler {
 	return this.Config
 }

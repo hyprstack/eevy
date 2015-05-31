@@ -1,7 +1,7 @@
 package config
 
 type Sqs interface {
-	Listener
+	Handler
 
 	GetUrl() string
 	GetRegion() string

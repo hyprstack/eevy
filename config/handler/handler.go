@@ -1,4 +1,4 @@
-package listener
+package handler
 
 import (
 	"encoding/json"
@@ -6,11 +6,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type ListenerBase struct {
+type HandlerBase struct {
 	options map[string]interface{}
 }
 
-func (this *ListenerBase) Init(s string) {
+func (this *HandlerBase) Init(s string) {
 
 	err := json.Unmarshal([]byte(s), &this.options)
 	if err == nil {
@@ -21,12 +21,12 @@ func (this *ListenerBase) Init(s string) {
 	return
 }
 
-func (this *ListenerBase) String() string {
+func (this *HandlerBase) String() string {
 	s, _ := json.Marshal(this.options)
 	return string(s)
 }
 
-func (this *ListenerBase) get(s string) interface{} {
+func (this *HandlerBase) get(s string) interface{} {
 
 	if b, ok := this.options[s]; ok {
 		return b
@@ -34,7 +34,7 @@ func (this *ListenerBase) get(s string) interface{} {
 	return nil
 }
 
-func (this *ListenerBase) getString(s string) string {
+func (this *HandlerBase) getString(s string) string {
 
 	i := this.get(s)
 	if m, ok := i.(string); ok {
@@ -44,7 +44,7 @@ func (this *ListenerBase) getString(s string) string {
 }
 
 // TODO(100% sure this could be done better)
-func (this *ListenerBase) getStringSlice(s string) []string {
+func (this *HandlerBase) getStringSlice(s string) []string {
 	a := this.get(s)
 	if m, ok := a.([]interface{}); ok {
 		sl := make([]string, len(m))
@@ -58,7 +58,7 @@ func (this *ListenerBase) getStringSlice(s string) []string {
 	return nil
 }
 
-func (this *ListenerBase) GetMessage() string {
+func (this *HandlerBase) GetMessage() string {
 
 	i := this.get("message")
 	if i == nil {
@@ -70,7 +70,7 @@ func (this *ListenerBase) GetMessage() string {
 	return ""
 }
 
-func (this *ListenerBase) GetType() string {
+func (this *HandlerBase) GetType() string {
 
 	return this.getString("type")
 }

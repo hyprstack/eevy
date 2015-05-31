@@ -16,7 +16,7 @@ import (
 )
 
 // Recieve a configuration struct and create the relavent source
-func BuildFromConfig(conf config.Source, rootList *listener.EventListener, log logger.Logger) Source {
+func BuildFromConfig(conf config.Source, rootList *listener.Listener, log logger.Logger) Source {
 
 	var src Source
 	switch conf.Type {
@@ -31,7 +31,7 @@ func BuildFromConfig(conf config.Source, rootList *listener.EventListener, log l
 }
 
 // Pass in the source configuration and this function both builds and starts listening to the source
-func StartSources(sourceConf *[]config.Source, rootList *listener.EventListener, log logger.Logger, wg sync.WaitGroup) {
+func StartSources(sourceConf *[]config.Source, rootList *listener.Listener, log logger.Logger, wg sync.WaitGroup) {
 
 	var wgLocal sync.WaitGroup
 	var sources []Source
@@ -49,7 +49,7 @@ func StartSources(sourceConf *[]config.Source, rootList *listener.EventListener,
 // Interface that all sources should satisfy
 type Source interface {
 	Listen(wg sync.WaitGroup)
-	init(log logger.Logger, conf config.Source, rootList *listener.EventListener)
+	init(log logger.Logger, conf config.Source, rootList *listener.Listener)
 }
 
 // Helper struct that performs common functions that most if not all Sources
@@ -57,13 +57,13 @@ type Source interface {
 type Base struct {
 	config.Source
 
-	Listener *listener.EventListener
+	Listener *listener.Listener
 	listLock sync.Mutex
 
 	Log logger.Logger
 }
 
-func (s *Base) init(log logger.Logger, conf config.Source, rootList *listener.EventListener) {
+func (s *Base) init(log logger.Logger, conf config.Source, rootList *listener.Listener) {
 	s.Log = log
 	s.Url = conf.Url
 	s.Region = conf.Region

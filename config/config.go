@@ -11,41 +11,46 @@ import (
 
 type Config struct {
 	Sources   []Source
+	Handlers  HandlerList
 	Listeners ListenerList
 }
 
-type ListenerList map[string][]Listener
+type ListenerList map[string][]string
 
-type Listener map[string]interface{}
+type HandlerList map[string]Handler
 
-func (this *Listener) GetType() string {
+type Handler map[string]interface{}
 
-	if _, ok := (*this)["type"]; !ok {
+func (this *Handler) get(s string) string {
+
+	if _, ok := (*this)[s]; !ok {
 		return ""
 	}
-	if t, ok := (*this)["type"].(string); ok {
+	if t, ok := (*this)[s].(string); ok {
 		return t
 	}
 	return ""
 }
 
-func (this *Listener) GetMessage() string {
+func (this *Handler) GetType() string {
+	return this.get("type")
+}
 
-	if _, ok := (*this)["message"]; !ok {
-		return ""
-	}
-	if t, ok := (*this)["message"].(string); ok {
-		return t
+func (this *Handler) GetMessage() string {
+
+	r := this.get("message")
+	if r != "" {
+		return r
 	}
 	return "${message}"
 }
 
-func (this *Listener) String() string {
+func (this *Handler) String() string {
 	b, _ := json.Marshal(this)
 	return string(b)
 }
 
-func (this *Listener) Init(s string) {
+func (this *Handler) Init(s string) {
 	return
 }
 

@@ -1,7 +1,7 @@
-package listener
+package handler
 
 type Lambda struct {
-	ListenerBase
+	HandlerBase
 }
 
 func (this *Lambda) GetFunction() string {

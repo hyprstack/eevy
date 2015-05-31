@@ -1,7 +1,7 @@
 package config
 
 type Lambda interface {
-	Listener
+	Handler
 
 	GetFunction() string
 	GetRegion() string

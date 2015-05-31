@@ -1,7 +1,7 @@
-package listener
+package handler
 
 type Sqs struct {
-	ListenerBase
+	HandlerBase
 }
 
 func (this *Sqs) GetRegion() string {

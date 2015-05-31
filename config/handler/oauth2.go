@@ -1,7 +1,7 @@
-package listener
+package handler
 
 type OAuth2 struct {
-	ListenerBase
+	HandlerBase
 }
 
 func (this *OAuth2) GetClientId() string {

@@ -5,8 +5,8 @@ type Event interface {
 	GetId() string
 }
 
-type Listener interface {
-	GetType() string
+type Handler interface {
+	GetName() string
 }
 
 type Logger interface {
@@ -33,8 +33,8 @@ type Logger interface {
 	Event(evt Event)
 
 	// logs a listener being triggered
-	Listener(l Listener, e Event)
+	Handler(l Handler, e Event)
 
 	// logs a listener error
-	ListenerError(l Listener, e Event)
+	HandlerError(l Handler, e Event)
 }

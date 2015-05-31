@@ -1,7 +1,7 @@
 package config
 
 type Cli interface {
-	Listener
+	Handler
 
 	GetBin() string
 	GetArgs() []string

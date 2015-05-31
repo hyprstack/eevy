@@ -1,6 +1,6 @@
 package config
 
-type Listener interface {
+type Handler interface {
 	GetType() string
 	GetMessage() string
 	String() string

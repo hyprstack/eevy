@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/hevnly/eevy/config"
+	"github.com/hevnly/eevy/handler"
 	"github.com/hevnly/eevy/listener"
 	"github.com/hevnly/eevy/source"
 )
@@ -19,7 +20,8 @@ func main() {
 	c := config.Config{}
 	c.LoadFromFile(confPath)
 
-	rootListener := listener.BuildListeners(&c.Listeners, log)
+	handlers := handler.BuildFromConf(c.Handlers, log)
+	rootListener := listener.BuildListener(c.Listeners, handlers, log)
 
 	var wg sync.WaitGroup
 	wg.Add(1)

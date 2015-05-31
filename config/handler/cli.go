@@ -1,7 +1,7 @@
-package listener
+package handler
 
 type Cli struct {
-	ListenerBase
+	HandlerBase
 }
 
 func (this *Cli) GetArgs() []string {

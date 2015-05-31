@@ -1,7 +1,7 @@
 package config
 
 type OAuth2 interface {
-	Listener
+	Handler
 
 	GetClientId() string
 	GetClientSecret() string
