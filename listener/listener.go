@@ -1,3 +1,4 @@
+// Listens on sources and envokes handlers when relavent events are detected
 package listener
 
 import (
@@ -11,7 +12,7 @@ import (
 )
 
 // Think of this as a collection of listeners grouped by the Event name
-// This also stores all of the child EventListners creating a tree structure
+// This also stores all of the child Handlers creating a tree structure
 type Listener struct {
 	Name     string
 	Handlers []handler.Handler
@@ -21,7 +22,6 @@ type Listener struct {
 	subLock  sync.Mutex
 }
 
-// type ListenerList map[string]string
 func BuildListener(conf config.ListenerList, hl *handler.HandlerList, log logger.Logger) *Listener {
 	rootListener := Listener{}
 	rootListener.Name = ""
@@ -35,7 +35,7 @@ func BuildListener(conf config.ListenerList, hl *handler.HandlerList, log logger
 	return &rootListener
 }
 
-// Add the Listener to this EventListener using the supplied event name (evt eg "test.subTest")
+// Add the Handler to this Listener using the supplied event name (evt eg "test.subTest")
 func (l *Listener) Add(evt string, handler handler.Handler) {
 
 	if evt == "_" {
@@ -95,13 +95,13 @@ func (l *Listener) Exec(evt event.Event) {
 	relName := strings.Replace(evt.Event, l.Name, "", -1)
 
 	l.subLock.Lock()
-	// execute all listners that end here
+	// execute all handlers that end here
 	if l.wildCard == true || l.Name == evt.Event {
 		for _, handler := range l.Handlers {
 			handler.Exec(evt)
 		}
 	}
-	// execute the wildcard listeners
+	// execute the wildcard handlers
 	if sub, ok := l.Subset["*"]; ok {
 
 		sub.Exec(evt)

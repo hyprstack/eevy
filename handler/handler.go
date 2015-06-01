@@ -1,3 +1,4 @@
+// handler describes all of the systems that events can be sent to by eevy
 package handler
 
 import (
