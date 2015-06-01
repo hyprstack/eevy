@@ -11,6 +11,7 @@ import (
 
 // Represents the structure that should be used in configuration files
 type Config struct {
+	Logs      Logger
 	Sources   []Source
 	Handlers  HandlerList
 	Listeners ListenerList

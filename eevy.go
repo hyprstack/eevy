@@ -13,12 +13,11 @@ func main() {
 
 	confPath := "./conf.yml"
 
-	log := NewLogger()
-
-	log.Info("Reading configuration file %s", confPath)
-
 	c := config.Config{}
 	c.LoadFromFile(confPath)
+
+	log := NewLogger(&c.Logs)
+	log.Info("Reading configuration file %s", confPath)
 
 	handlers := handler.BuildFromConf(c.Handlers, log)
 	rootListener := listener.BuildListener(c.Listeners, handlers, log)

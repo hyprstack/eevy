@@ -17,6 +17,10 @@ Download the binary file from the github release page(currently built using Ubun
 ## Configuration ##
 A yaml file is used to configure the sources, handlers and listeners. It must be called "conf.yml" and sit beside the eevy binary file.  Below is an example configuration file;
 ```yaml
+logs:
+  event: stdout
+  handler: stderr
+  app: /var/log/eevy/app.log
 sources:
   - type: sqs
     url: https://sqs.eu-west-1.amazonaws.com/999999999/lambda

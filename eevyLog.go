@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 
 	"github.com/op/go-logging"
@@ -12,14 +13,22 @@ type EevyLog struct {
 	AppLog     logging.Logger
 	EventLog   logging.Logger
 	HandlerLog logging.Logger
+	Config     EevyLogConfig
 }
 
-func NewLogger() *EevyLog {
+type EevyLogConfig interface {
+	GetEventPath() string
+	GetHandlerPath() string
+	GetAppPath() string
+}
+
+func NewLogger(config EevyLogConfig) *EevyLog {
 
 	log := EevyLog{
 		AppLog:     logging.Logger{Module: "appLog"},
 		EventLog:   logging.Logger{Module: "eventLog"},
 		HandlerLog: logging.Logger{Module: "handlerLog"},
+		Config:     config,
 	}
 	log.buildAppLog()
 	log.buildEventLog()
@@ -28,12 +37,29 @@ func NewLogger() *EevyLog {
 	return &log
 }
 
+func getWriter(s string) io.Writer {
+
+	var fo io.Writer
+	var err error
+	switch s {
+	case "stdout":
+		fo = os.Stdout
+
+	case "stderr":
+		fo = os.Stderr
+
+	default:
+		fo, err = os.Create(s)
+	}
+	if err != nil {
+		return nil
+	}
+	return fo
+}
+
 func (this *EevyLog) buildAppLog() {
 
-	fo, err := os.Create("/var/log/eevy/app.log")
-	if err != nil {
-		return
-	}
+	fo := getWriter(this.Config.GetAppPath())
 	appBe := logging.NewLogBackend(fo, "", 0)
 	var appFormat = logging.MustStringFormatter(
 		"%{time} %{level} %{message}",
@@ -46,10 +72,7 @@ func (this *EevyLog) buildAppLog() {
 
 func (this *EevyLog) buildEventLog() {
 
-	fo, err := os.Create("/var/log/eevy/event.log")
-	if err != nil {
-		return
-	}
+	fo := getWriter(this.Config.GetEventPath())
 	evtBe := logging.NewLogBackend(fo, "", 0)
 	var evtFormat = logging.MustStringFormatter(
 		"%{time} %{message}",
@@ -62,10 +85,7 @@ func (this *EevyLog) buildEventLog() {
 
 func (this *EevyLog) buildHandlerLog() {
 
-	fo, err := os.Create("/var/log/eevy/handler.log")
-	if err != nil {
-		return
-	}
+	fo := getWriter(this.Config.GetHandlerPath())
 	handBe := logging.NewLogBackend(fo, "", 0)
 	var handFormat = logging.MustStringFormatter(
 		"%{time} %{message}",
