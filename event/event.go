@@ -21,6 +21,7 @@ func (this *Event) Get(s string) interface{} {
 	return get(s, this.Message)
 }
 
+// Returns a string from the required variable name
 func (this *Event) GetString(s string) string {
 
 	val := this.Get(s)
@@ -28,6 +29,7 @@ func (this *Event) GetString(s string) string {
 	return r
 }
 
+// Returns a int from the required variable name
 func (this *Event) GetInt(s string) int {
 
 	val := this.Get(s)
@@ -38,10 +40,19 @@ func (this *Event) GetInt(s string) int {
 	return 0
 }
 
+// Returns a float64 from the required variable name
 func (this *Event) GetFloat(s string) float64 {
 
 	val := this.Get(s)
 	return val.(float64)
+}
+
+func (this *Event) GetName() string {
+	return this.Event
+}
+
+func (this *Event) GetId() string {
+	return this.Id
 }
 
 func get(s string, val interface{}) interface{} {
