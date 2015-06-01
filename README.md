@@ -70,11 +70,12 @@ This source listens on a specified port for HTTP connections. A POST request sho
 | ---- | ---- | ------------------------------------------ |
 |type  |string| This must be set to "http"                 |
 |port  |int   | The port number to listen on               |
+|bindIp|string| Ip address to bind to                      |
 
 ## Handlers ##
 ### AWS SQS ###
 #### Description ####
-When a relevant event is recieved place its message section onto the supplied AWS SQS.
+When a relevant event is received place its message section onto the supplied AWS SQS.
 #### Config ####
 | Name   | Type | Description                                |
 | ------ | ---- | ------------------------------------------ |

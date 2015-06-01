@@ -21,7 +21,7 @@ type Http struct {
 // Satisfies the Source interface and starts listening to the specified port
 func (s *Http) Listen(wg sync.WaitGroup) {
 
-	s.Log.Info("Start listening (http:%d)", s.Port)
+	s.Log.Info("Start listening (http:%s:%d)", s.BindIp, s.Port)
 
 	m := martini.New()
 	route := martini.NewRouter()
@@ -56,7 +56,7 @@ func (s *Http) Listen(wg sync.WaitGroup) {
 
 	m.Action(route.Handle)
 
-	port := fmt.Sprintf(":%d", s.Port)
+	port := fmt.Sprintf("%s:%d", s.BindIp, s.Port)
 	if err := http.ListenAndServe(port, m); err != nil {
 		s.Log.Error(err.Error())
 	}

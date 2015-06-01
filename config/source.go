@@ -1,9 +1,10 @@
 package config
 
 type Source struct {
-	Type	string
-	Host    string
-	Port    int
-	Url     string
-	Region  string
+	Type   string
+	Host   string
+	Port   int
+	BindIp string `yaml:"bindIp"`
+	Url    string
+	Region string
 }

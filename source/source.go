@@ -68,6 +68,7 @@ func (s *Base) init(log logger.Logger, conf config.Source, rootList *listener.Li
 	s.Url = conf.Url
 	s.Region = conf.Region
 	s.Port = conf.Port
+	s.BindIp = conf.BindIp
 	s.Listener = rootList
 }
 
