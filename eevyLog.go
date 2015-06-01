@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -49,9 +50,10 @@ func getWriter(s string) io.Writer {
 		fo = os.Stderr
 
 	default:
-		fo, err = os.Create(s)
+		fo, err = os.OpenFile("test", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
 	}
 	if err != nil {
+		fmt.Printf("Error creating log file: %s\n", err.Error())
 		return nil
 	}
 	return fo
@@ -60,6 +62,9 @@ func getWriter(s string) io.Writer {
 func (this *EevyLog) buildAppLog() {
 
 	fo := getWriter(this.Config.GetAppPath())
+	if fo == nil {
+		return
+	}
 	appBe := logging.NewLogBackend(fo, "", 0)
 	var appFormat = logging.MustStringFormatter(
 		"%{time} %{level} %{message}",
@@ -73,6 +78,9 @@ func (this *EevyLog) buildAppLog() {
 func (this *EevyLog) buildEventLog() {
 
 	fo := getWriter(this.Config.GetEventPath())
+	if fo == nil {
+		return
+	}
 	evtBe := logging.NewLogBackend(fo, "", 0)
 	var evtFormat = logging.MustStringFormatter(
 		"%{time} %{message}",
@@ -86,6 +94,9 @@ func (this *EevyLog) buildEventLog() {
 func (this *EevyLog) buildHandlerLog() {
 
 	fo := getWriter(this.Config.GetHandlerPath())
+	if fo == nil {
+		return
+	}
 	handBe := logging.NewLogBackend(fo, "", 0)
 	var handFormat = logging.MustStringFormatter(
 		"%{time} %{message}",
