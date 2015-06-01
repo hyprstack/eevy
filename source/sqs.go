@@ -9,7 +9,7 @@ import (
 )
 
 // Listens to an AWS SQS.  When a message is placed onto this queue it is
-// converted into a Event and assesed by the listeners.  The message must be
+// converted into a Event and assessed by the listeners.  The message must be
 // a JSON string representing an Event
 type Sqs struct {
 	Base
@@ -17,7 +17,7 @@ type Sqs struct {
 	svc *sqs.SQS
 }
 
-// Satisfies the Source interface.  Beigins listening to an AWS SQS queue.  If no
+// Satisfies the Source interface.  Begins listening to an AWS SQS queue.  If no
 // message is on the queue it sleeps for a set period of time before trying again
 func (s *Sqs) Listen(wg sync.WaitGroup) {
 

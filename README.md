@@ -1,7 +1,7 @@
 # Description #
 eevy is a micro weight go based message broker.
 
-Sources listen on http ports, AWS SQS queus etc for incoming events.  Event listeners keep an eye out for events with specific names and invoke handlers when certain events are detected.
+Sources listen on http ports, AWS SQS queues etc for incoming events.  Event listeners keep an eye out for events with specific names and invoke handlers when certain events are detected.
 
 Handlers can invoke an AWS Lambda function, place the event data on an AWS SQS queue, call an http end point with OAuth2 authentication etc.
 # Getting started #
@@ -50,7 +50,7 @@ listeners:
 ```
 The above example creates two sources; an AWS SQS and starts listening on port 8000 for HTTP requests.
 There are three handlers defined which can be used throughout eevy.
-The "_" listener is a wild card and responds to every event received (this would make more sense if it was "\*" however yaml doesn't like special characters at start of a key).  It envokes the hanlders that are defined it its array, in this example it places the events message received onto an AWS SQS queue via he "testSqs" handler. "application.*" envokes its handler when any event that begins with "application" is detected.  Finally "test.event2" will only be called when exactly that event is recievied.  Without the trailling "*" it will not respond to any event that has a sub event name eg "test.event2.anything".
+The "_" listener is a wild card and responds to every event received (this would make more sense if it was "\*" however yaml doesn't like special characters at start of a key).  It evokes the handlers that are defined it its array, in this example it places the events message received onto an AWS SQS queue via he "testSqs" handler. "application.*" invokes its handler when any event that begins with "application" is detected.  Finally "test.event2" will only be called when exactly that event is revived.  Without the trialling "*" it will not respond to any event that has a sub event name eg "test.event2.anything".
 ## Sources ##
 ### AWS SQS ###
 #### Description ####

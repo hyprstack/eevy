@@ -58,7 +58,7 @@ func (this *HandlerList) Get(s string) Handler {
 	return nil
 }
 
-// Recieves a configuration struct and creates the relavent Handler
+// Receives a configuration struct and creates the relevant Handler
 func BuildHandlerFromConf(conf config.Handler, log logger.Logger) *Handler {
 
 	var l Handler

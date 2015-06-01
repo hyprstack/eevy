@@ -8,7 +8,7 @@ import (
 	"github.com/hevnly/eevy/handler/config"
 )
 
-// Places a message on an AWS SQS when relavent event is triggered
+// Places a message on an AWS SQS when relevant event is triggered
 type Sqs struct {
 	HandlerBase
 

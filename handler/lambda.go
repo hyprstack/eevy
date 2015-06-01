@@ -17,7 +17,7 @@ type Lambda struct {
 	Config config.Lambda
 }
 
-// Satifies the Listener interface and calls the Lambda function
+// Satisfies the Listener interface and calls the Lambda function
 func (this *Lambda) Exec(evt event.Event) {
 
 	this.Log.Handler(this, &evt)

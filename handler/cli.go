@@ -16,7 +16,7 @@ type Cli struct {
 	Config config.Cli
 }
 
-// Satisfies the Listener interface and calls the relavent binary file
+// Satisfies the Listener interface and calls the relevant binary file
 func (this *Cli) Exec(evt event.Event) {
 
 	this.Log.Handler(this, &evt)

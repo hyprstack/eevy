@@ -11,14 +11,14 @@ import (
 	"github.com/hevnly/eevy/handler/config"
 )
 
-// Make an http call authnticating via an OAuth2 url
+// Make an http call authenticating via an OAuth2 url
 type OAuth2 struct {
 	HandlerBase
 
 	Config config.OAuth2
 }
 
-// Satifies the Listener interface and makes the http call after authenticating
+// Satisfies the Listener interface and makes the http call after authenticating
 func (this *OAuth2) Exec(evt event.Event) {
 
 	this.Log.Handler(this, &evt)
