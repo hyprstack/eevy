@@ -15,7 +15,7 @@ import (
 	"github.com/hevnly/eevy/logger"
 )
 
-// Recieve a configuration struct and create the relavent source
+// Recieve a configuration struct and create the relevant source
 func BuildFromConfig(conf config.Source, rootList *listener.Listener, log logger.Logger) Source {
 
 	var src Source

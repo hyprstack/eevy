@@ -11,7 +11,7 @@ import (
 	"github.com/martini-contrib/encoder"
 )
 
-// Http source listenes to a specified http port.  To create an event send a "POST" request
+// Http source listens to a specified http port.  To create an event send a "POST" request
 // to "/event/" with the json event object as the body of the request.
 //  curl -X POST -d '{"event":"test","message":{"test": 1}' http://localhost:8080/event/
 type Http struct {
