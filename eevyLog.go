@@ -50,7 +50,7 @@ func getWriter(s string) io.Writer {
 		fo = os.Stderr
 
 	default:
-		fo, err = os.OpenFile("test", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
+		fo, err = os.OpenFile(s, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
 	}
 	if err != nil {
 		fmt.Printf("Error creating log file: %s\n", err.Error())
