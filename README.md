@@ -21,6 +21,7 @@ logs:
   event: stdout
   handler: stderr
   app: /var/log/eevy/app.log
+  level: ERROR
 sources:
   - type: sqs
     url: https://sqs.eu-west-1.amazonaws.com/999999999/lambda
@@ -51,6 +52,14 @@ listeners:
 The above example creates two sources; an AWS SQS and starts listening on port 8000 for HTTP requests.
 There are three handlers defined which can be used throughout eevy.
 The "_" listener is a wild card and responds to every event received (this would make more sense if it was "\*" however yaml doesn't like special characters at start of a key).  It evokes the handlers that are defined it its array, in this example it places the events message received onto an AWS SQS queue via he "testSqs" handler. "application.*" invokes its handler when any event that begins with "application" is detected.  Finally "test.event2" will only be called when exactly that event is revived.  Without the trialling "*" it will not respond to any event that has a sub event name eg "test.event2.anything".
+### Logging ###
+Setting the logging level must be oe of the following string values;
+ - CRITICAL
+ - ERROR
+ - WARNING
+ - NOTICE
+ - INFO
+ - DEBUG
 ## Sources ##
 ### AWS SQS ###
 #### Description ####

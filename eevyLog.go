@@ -21,6 +21,7 @@ type EevyLogConfig interface {
 	GetEventPath() string
 	GetHandlerPath() string
 	GetAppPath() string
+	GetSeverityLevel() string
 }
 
 func NewLogger(config EevyLogConfig) *EevyLog {
@@ -71,7 +72,9 @@ func (this *EevyLog) buildAppLog() {
 	)
 	appBeFormatter := logging.NewBackendFormatter(appBe, appFormat)
 	appLeveled := logging.AddModuleLevel(appBeFormatter)
-	appLeveled.SetLevel(logging.DEBUG, "")
+	level, _ := logging.LogLevel(this.Config.GetSeverityLevel())
+
+	appLeveled.SetLevel(level, "")
 	this.AppLog.SetBackend(appLeveled)
 }
 

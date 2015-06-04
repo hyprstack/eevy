@@ -4,6 +4,7 @@ type Logger struct {
 	Event   string
 	Handler string
 	App     string
+	Level   string
 }
 
 func (this *Logger) GetEventPath() string {
@@ -16,4 +17,8 @@ func (this *Logger) GetHandlerPath() string {
 
 func (this *Logger) GetAppPath() string {
 	return this.App
+}
+
+func (this *Logger) GetSeverityLevel() string {
+	return this.Level
 }
