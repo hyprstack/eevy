@@ -1,0 +1,88 @@
+{
+	"ImportPath": "github.com/hevnly/eevy",
+	"GoVersion": "go1.4.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/aws",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/apierr",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/endpoints",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/protocol/json/jsonutil",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/protocol/jsonrpc",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/protocol/query",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/protocol/rest",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/protocol/restjson",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/protocol/xml/xmlutil",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/internal/signer/v4",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/service/lambda",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/awslabs/aws-sdk-go/service/sqs",
+			"Rev": "29717a72a2fc649e790ce97dc2c4d96e32950844"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/inject",
+			"Comment": "v1.0-rc1-10-g33e0aa1",
+			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
+		},
+		{
+			"ImportPath": "github.com/go-martini/martini",
+			"Comment": "v1.0-124-gd398859",
+			"Rev": "d39885924ac22dcafaa9fd452a3af1261107799d"
+		},
+		{
+			"ImportPath": "github.com/martini-contrib/encoder",
+			"Rev": "f07f7dc73cdc5a53edf55023530b77c7edb8542a"
+		},
+		{
+			"ImportPath": "github.com/op/go-logging",
+			"Rev": "e5fb9bb8a3a168cc269b38f092b65d2e18cebb9a"
+		},
+		{
+			"ImportPath": "github.com/vaughan0/go-ini",
+			"Rev": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "84ba27dd5b2d8135e9da1395277f2c9333a2ffda"
+		},
+		{
+			"ImportPath": "golang.org/x/oauth2",
+			"Rev": "2159a4568433098650737847e3b175db37178b7d"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "a1c4bcb6c278a41992e2f4f0f29a44b4146daa5c"
+		}
+	]
+}
