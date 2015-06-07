@@ -31,14 +31,17 @@ func (this *Cli) Exec(evt event.Event) {
 	cmd := exec.Command(bin, args...)
 	cmd.Stdin = strings.NewReader(stdin)
 	var out bytes.Buffer
+	var sErr bytes.Buffer
 	cmd.Stdout = &out
-	cmd.Stderr = &out
+	cmd.Stderr = &sErr
 
+	this.Log.Info("CLI CMD %s %s \"%s %s\"", evt.GetId(), this.GetName(), bin, strings.Join(args, " "))
 	err := cmd.Run()
 	if err != nil {
-		this.Log.Error("%s: %s", out.String(), err.Error())
+		this.Log.HandlerError(this, err.Error(), &evt)
 		return
 	}
+	this.Log.Debug("CLI OUT %s %s \"%s\"", evt.GetId(), this.GetName(), out.String())
 }
 
 func (this *Cli) GetType() string {

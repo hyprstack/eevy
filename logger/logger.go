@@ -36,5 +36,5 @@ type Logger interface {
 	Handler(l Handler, e Event)
 
 	// logs a listener error
-	HandlerError(l Handler, e Event)
+	HandlerError(l Handler, msg string, e Event)
 }

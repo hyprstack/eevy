@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"os"
 
@@ -20,6 +21,7 @@ type EevyLogConfig interface {
 	GetEventPath() string
 	GetHandlerPath() string
 	GetAppPath() string
+	GetSeverityLevel() string
 }
 
 func NewLogger(config EevyLogConfig) *EevyLog {
@@ -49,9 +51,10 @@ func getWriter(s string) io.Writer {
 		fo = os.Stderr
 
 	default:
-		fo, err = os.Create(s)
+		fo, err = os.OpenFile(s, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
 	}
 	if err != nil {
+		fmt.Printf("Error creating log file: %s\n", err.Error())
 		return nil
 	}
 	return fo
@@ -60,22 +63,30 @@ func getWriter(s string) io.Writer {
 func (this *EevyLog) buildAppLog() {
 
 	fo := getWriter(this.Config.GetAppPath())
+	if fo == nil {
+		return
+	}
 	appBe := logging.NewLogBackend(fo, "", 0)
 	var appFormat = logging.MustStringFormatter(
-		"%{time} %{level} %{message}",
+		"%{time} APP %{level} %{message}",
 	)
 	appBeFormatter := logging.NewBackendFormatter(appBe, appFormat)
 	appLeveled := logging.AddModuleLevel(appBeFormatter)
-	appLeveled.SetLevel(logging.DEBUG, "")
+	level, _ := logging.LogLevel(this.Config.GetSeverityLevel())
+
+	appLeveled.SetLevel(level, "")
 	this.AppLog.SetBackend(appLeveled)
 }
 
 func (this *EevyLog) buildEventLog() {
 
 	fo := getWriter(this.Config.GetEventPath())
+	if fo == nil {
+		return
+	}
 	evtBe := logging.NewLogBackend(fo, "", 0)
 	var evtFormat = logging.MustStringFormatter(
-		"%{time} %{message}",
+		"%{time} EVT %{message}",
 	)
 	evtBeFormatter := logging.NewBackendFormatter(evtBe, evtFormat)
 	evtLeveled := logging.AddModuleLevel(evtBeFormatter)
@@ -86,9 +97,12 @@ func (this *EevyLog) buildEventLog() {
 func (this *EevyLog) buildHandlerLog() {
 
 	fo := getWriter(this.Config.GetHandlerPath())
+	if fo == nil {
+		return
+	}
 	handBe := logging.NewLogBackend(fo, "", 0)
 	var handFormat = logging.MustStringFormatter(
-		"%{time} %{message}",
+		"%{time} LIST %{message}",
 	)
 	handBeFormatter := logging.NewBackendFormatter(handBe, handFormat)
 	handLeveled := logging.AddModuleLevel(handBeFormatter)
@@ -104,8 +118,8 @@ func (this *EevyLog) Handler(l logger.Handler, e logger.Event) {
 	this.HandlerLog.Info("EXEC %s %s %s", l.GetName(), e.GetName(), e.GetId())
 }
 
-func (this *EevyLog) HandlerError(l logger.Handler, e logger.Event) {
-	this.HandlerLog.Error("ERROR %s %s %s", l.GetName(), e.GetName(), e.GetId())
+func (this *EevyLog) HandlerError(l logger.Handler, msg string, e logger.Event) {
+	this.HandlerLog.Error("ERROR %s %s %s %s", l.GetName(), e.GetName(), e.GetId(), msg)
 }
 
 func (this *EevyLog) Critical(format string, args ...interface{}) {
@@ -113,21 +127,21 @@ func (this *EevyLog) Critical(format string, args ...interface{}) {
 }
 
 func (this *EevyLog) Error(format string, args ...interface{}) {
-	this.AppLog.Critical(format, args...)
+	this.AppLog.Error(format, args...)
 }
 
 func (this *EevyLog) Warning(format string, args ...interface{}) {
-	this.AppLog.Critical(format, args...)
+	this.AppLog.Warning(format, args...)
 }
 
 func (this *EevyLog) Notice(format string, args ...interface{}) {
-	this.AppLog.Critical(format, args...)
+	this.AppLog.Notice(format, args...)
 }
 
 func (this *EevyLog) Info(format string, args ...interface{}) {
-	this.AppLog.Critical(format, args...)
+	this.AppLog.Info(format, args...)
 }
 
 func (this *EevyLog) Debug(format string, args ...interface{}) {
-	this.AppLog.Critical(format, args...)
+	this.AppLog.Debug(format, args...)
 }
