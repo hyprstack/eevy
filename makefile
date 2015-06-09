@@ -1,7 +1,7 @@
 GOFLAGS ?= $(GOFLAGS:)
 
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
-ifeq ( $(BRANCH), "master" )
+ifeq ($(BRANCH),master)
   VERSION := $(shell git describe --tags)
 else
   DT := $(shell date '+%F::%T')
