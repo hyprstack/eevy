@@ -22,6 +22,7 @@ test: install
 	@go test $(GOFLAGS) ./...
 
 get-deps:
+	go get github.com/tools/godep
 	@godep restore
 
 clean:
