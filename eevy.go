@@ -14,16 +14,15 @@ import (
 var version string
 
 func main() {
-
 	var verFlag bool
 	flag.BoolVar(&verFlag, "version", false, "Returns the version number")
 	var confPath string
-	flag.StringVar(&confPath, "conf", "conf.yml", "Location on config file (default conf.yml)")
+	flag.StringVar(&confPath, "conf", "conf.yml", "Location on config file")
 	flag.Parse()
 
 	// if the user wants to see the version
 	if verFlag {
-		fmt.Println(version)
+		fmt.Printf("%s", version)
 		return
 	}
 
