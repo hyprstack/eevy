@@ -1,7 +1,7 @@
 GOFLAGS ?= $(GOFLAGS:)
 
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
-ifeq ($(BRANCH),master)
+ifeq ($(BRANCH),$(filter $(BRANCH), master HEAD))
   VERSION := $(shell git describe --tags)
 else
   DT := $(shell date '+%F::%T')
@@ -15,7 +15,6 @@ default: all
 all: test install
 
 install: get-deps
-
 	@go build $(GOFLAGS) *.go
 
 test: install
