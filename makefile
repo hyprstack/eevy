@@ -1,14 +1,17 @@
 GOFLAGS ?= $(GOFLAGS:)
 
-BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
-ifeq ($(BRANCH),$(filter $(BRANCH), master HEAD))
-  VERSION := $(shell git describe --tags)
-else
+TAG := $(shell echo $$TRAVIS_TAG)
+ifeq ($(TAG),)
+  BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
   DT := $(shell date '+%F::%T')
   VERSION := $(BRANCH)-$(DT)
+else
+  VERSION := $(TAG)
 endif
 
 GOFLAGS = -ldflags '-X main.version $(VERSION)'
+
+print-%  : ; @echo $* = $($*)
 
 default: all
 
