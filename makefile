@@ -11,8 +11,6 @@ endif
 
 GOFLAGS = -ldflags '-X main.version $(VERSION)'
 
-print-%  : ; @echo $* = $($*)
-
 default: all
 
 all: test install
