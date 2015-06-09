@@ -1,15 +1,15 @@
 GOFLAGS ?= $(GOFLAGS:)
 
-TAG := $(shell echo $$TRAVIS_TAG)
+TAG := $(VERSION)
 ifeq ($(TAG),)
   BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
   DT := $(shell date '+%F::%T')
-  VERSION := $(BRANCH)-$(DT)
+  VSN := $(BRANCH)-$(DT)
 else
-  VERSION := $(TAG)
+  VSN := $(TAG)
 endif
 
-GOFLAGS = -ldflags '-X main.version $(VERSION)'
+GOFLAGS = -ldflags '-X main.version $(VSN)'
 
 default: all
 
@@ -18,7 +18,7 @@ all: test install
 install: get-deps
 	@go build $(GOFLAGS) *.go
 
-test: install
+test:
 	@go test $(GOFLAGS) ./...
 
 get-deps:
