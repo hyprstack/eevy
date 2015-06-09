@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"sync"
 
 	"github.com/hevnly/eevy/config"
@@ -9,14 +11,26 @@ import (
 	"github.com/hevnly/eevy/source"
 )
 
-func main() {
+var version string
 
-	confPath := "./conf.yml"
+func main() {
+	var verFlag bool
+	flag.BoolVar(&verFlag, "version", false, "Returns the version number")
+	var confPath string
+	flag.StringVar(&confPath, "conf", "conf.yml", "Location on config file")
+	flag.Parse()
+
+	// if the user wants to see the version
+	if verFlag {
+		fmt.Printf("%s", version)
+		return
+	}
 
 	c := config.Config{}
 	c.LoadFromFile(confPath)
 
 	log := NewLogger(&c.Logs)
+	log.Info("eevy starting (v%s)", version)
 	log.Info("Reading configuration file %s", confPath)
 
 	handlers := handler.BuildFromConf(c.Handlers, log)
