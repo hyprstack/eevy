@@ -8,6 +8,7 @@ import (
 
 	"github.com/hevnly/eevy/event"
 	"github.com/hevnly/eevy/handler/mocks"
+	loggerMocks "github.com/hevnly/eevy/logger/mocks"
 )
 
 func TestStub(t *testing.T) {
@@ -16,7 +17,9 @@ func TestStub(t *testing.T) {
 
 func TestAdd(t *testing.T) {
 
-	rootList := Listener{}
+	log := getLogger()
+
+	rootList := Listener{Log: log}
 	rootList.Name = ""
 
 	rootList.Add("_", &mocks.Handler{})
@@ -39,6 +42,13 @@ func TestAdd(t *testing.T) {
 	assert.Equal(t, len(rootList.Subset["test"].Handlers), 1, "Adding 'test.sub', check root subset")
 	assert.Equal(t, len(rootList.Subset["test"].Subset["*"].Handlers), 1, "Adding 'test.sub', check subset wildcard")
 	assert.Equal(t, len(rootList.Subset["test"].Subset["sub"].Handlers), 1, "Adding 'test.sub', check subset sub")
+
+	rootList.Add("test.test1", &mocks.Handler{})
+	assert.Equal(t, len(rootList.Subset["*"].Handlers), 2, "Adding 'test.test1', Test duplicate name in subname")
+	assert.Equal(t, len(rootList.Subset["test"].Handlers), 1, "Adding 'test.sub', check root subset")
+	assert.Equal(t, len(rootList.Subset["test"].Subset["*"].Handlers), 1, "Adding 'test.sub', check subset wildcard")
+	assert.Equal(t, len(rootList.Subset["test"].Subset["sub"].Handlers), 1, "Adding 'test.sub', check subset sub")
+	assert.Equal(t, len(rootList.Subset["test"].Subset["test1"].Handlers), 1, "Adding 'test.sub', check subset sub")
 
 	rootList.Add("test1.*", &mocks.Handler{})
 	assert.Equal(t, len(rootList.Subset["*"].Handlers), 2, "Adding 'test1.*', check root wildcard")
@@ -93,9 +103,25 @@ func TestExec(t *testing.T) {
 	}
 }
 
+func getLogger() *loggerMocks.Logger {
+
+	log := &loggerMocks.Logger{}
+
+	log.On("Critical", mock.AnythingOfType("string"), mock.AnythingOfType("[]interface {}")).Return(true)
+	log.On("Error", mock.AnythingOfType("string"), mock.AnythingOfType("[]interface {}")).Return(true)
+	log.On("Warning", mock.AnythingOfType("string"), mock.AnythingOfType("[]interface {}")).Return(true)
+	log.On("Notice", mock.AnythingOfType("string"), mock.AnythingOfType("[]interface {}")).Return(true)
+	log.On("Info", mock.AnythingOfType("string"), mock.AnythingOfType("[]interface {}")).Return(true)
+	log.On("Debug", mock.AnythingOfType("string"), mock.AnythingOfType("[]interface {}")).Return(true)
+
+	return log
+}
+
 func createRootList() (*Listener, *map[string]*mocks.Handler) {
 
-	rootList := Listener{}
+	log := getLogger()
+
+	rootList := Listener{Log: log}
 	rootList.Name = ""
 
 	l := make(map[string]*mocks.Handler)

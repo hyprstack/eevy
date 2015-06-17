@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"sync"
 
 	"github.com/hevnly/eevy/config"
@@ -23,19 +24,26 @@ func main() {
 	// if the user wants to see the version
 	if verFlag {
 		fmt.Printf("%s", version)
-		return
+		os.Exit(0)
 	}
 
 	c := config.Config{}
-	c.LoadFromFile(confPath)
+	err := c.LoadFromPath(confPath)
+	if err != nil {
+		fmt.Printf("Error loading config file: %s\n\n", err.Error())
+		os.Exit(2)
+	}
 
 	log := NewLogger(&c.Logs)
 	log.Info("eevy starting (v%s)", version)
 	log.Info("Reading configuration file %s", confPath)
 
+	log.Info("Building handlers")
 	handlers := handler.BuildFromConf(c.Handlers, log)
+	log.Info("Building listeners")
 	rootListener := listener.BuildListener(c.Listeners, handlers, log)
 
+	log.Info("Starting sources")
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go source.StartSources(&c.Sources, rootListener, log, wg)

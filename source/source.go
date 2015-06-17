@@ -33,6 +33,7 @@ func BuildFromConfig(conf config.Source, rootList *listener.Listener, log logger
 // Pass in the source configuration and this function both builds and starts listening to the source
 func StartSources(sourceConf *[]config.Source, rootList *listener.Listener, log logger.Logger, wg sync.WaitGroup) {
 
+	log.Info("%d listeners to start", len(*sourceConf))
 	var wgLocal sync.WaitGroup
 	var sources []Source
 	for _, conf := range *sourceConf {

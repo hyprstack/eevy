@@ -2,6 +2,8 @@
 package listener
 
 import (
+	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -18,14 +20,20 @@ type Listener struct {
 	Handlers []handler.Handler
 	Subset   map[string]*Listener
 
+	Log logger.Logger
+
 	wildCard bool
 	subLock  sync.Mutex
 }
 
 func BuildListener(conf config.ListenerList, hl *handler.HandlerList, log logger.Logger) *Listener {
 	rootListener := Listener{}
+	rootListener.Log = log
+
 	rootListener.Name = ""
 	for evtName, listners := range conf {
+
+		log.Debug("Creating listeners for \"%s\": %q", evtName, listners)
 		for _, l := range listners {
 
 			h := hl.Get(l)
@@ -38,17 +46,21 @@ func BuildListener(conf config.ListenerList, hl *handler.HandlerList, log logger
 // Add the Handler to this Listener using the supplied event name (evt eg "test.subTest")
 func (l *Listener) Add(evt string, handler handler.Handler) {
 
+	l.Log.Debug("Adding %s to %s", handler.GetName(), l.Name)
 	if evt == "_" {
 		evt = "*"
 	}
 
 	// if this is the event we are trying to add to
 	if evt == l.Name {
+		l.Log.Debug("Added %s to %s", handler.GetName(), l.Name)
 		l.Handlers = append(l.Handlers, handler)
 		return
 	}
 
-	name := strings.Replace(evt, l.Name, "", -1)
+	srx := fmt.Sprintf("^%s", l.Name)
+	re := regexp.MustCompile(srx)
+	name := re.ReplaceAllString(evt, "")
 	ns := strings.Split(name, ".")
 	// if the first name space is empty remove it
 	if ns[0] == "" {
@@ -59,6 +71,7 @@ func (l *Listener) Add(evt string, handler handler.Handler) {
 	// if this is the event we are trying to add to
 	// but we had a trailing '.' on the name
 	if leng == 0 {
+		l.Log.Debug("Added %s to %s", handler.GetName(), l.Name)
 		l.Handlers = append(l.Handlers, handler)
 		return
 	}
@@ -79,7 +92,9 @@ func (l *Listener) Add(evt string, handler handler.Handler) {
 	newSub := Listener{
 		Name:     newName,
 		wildCard: ns[0] == "*",
+		Log:      l.Log,
 	}
+	l.Log.Debug("%s created child %s: %q", l.Name, newSub.Name)
 	newSub.Add(evt, handler)
 
 	if l.Subset == nil {
