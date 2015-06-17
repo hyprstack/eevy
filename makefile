@@ -9,7 +9,9 @@ else
   VSN := $(TAG)
 endif
 
-GOFLAGS = -ldflags '-X main.version $(VSN)'
+GOFLAGS = -ldflags "-X main.version $(VSN)"
+
+print-%  : ; @echo $* = $($*)
 
 default: all
 
