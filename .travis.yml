@@ -2,6 +2,8 @@ language: go
 script: make VERSION=$TRAVIS_TAG
 go:
 - 1.4.1
+script:
+  - "make $TRAVIS_TAG"
 deploy:
   provider: releases
   api_key:

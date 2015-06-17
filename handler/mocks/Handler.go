@@ -9,6 +9,8 @@ import (
 
 type Handler struct {
 	mock.Mock
+
+	Name string
 }
 
 func (m *Handler) Exec(evt event.Event) {
@@ -22,11 +24,7 @@ func (m *Handler) GetType() string {
 	return r0
 }
 func (m *Handler) GetName() string {
-	ret := m.Called()
-
-	r0 := ret.Get(0).(string)
-
-	return r0
+	return m.Name
 }
 func (m *Handler) SetName(s string) {
 	m.Called(s)
