@@ -46,6 +46,8 @@ func BuildFromConf(conf appConfig.HandlerList, log logger.Logger) *HandlerList {
 	for name, c := range conf {
 		h := *BuildHandlerFromConf(&c, log)
 		h.SetName(name)
+
+		log.Debug("Created handler, %s, of type %s", h.GetName(), h.GetType())
 		hl.List[name] = h
 	}
 	return hl
@@ -86,6 +88,10 @@ func BuildHandlerFromConf(conf config.Handler, log logger.Logger) *Handler {
 		tl.Log = log
 		tl.Config.Init(conf.String())
 		l = tl
+
+	default:
+		log.Warning("Could not create handler for type '%s'", conf.GetType())
+		return nil
 
 	}
 	return &l

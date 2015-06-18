@@ -76,6 +76,8 @@ func (this *EevyLog) buildAppLog() {
 
 	appLeveled.SetLevel(level, "")
 	this.AppLog.SetBackend(appLeveled)
+
+	this.Debug("App log created: %s", this.Config.GetAppPath())
 }
 
 func (this *EevyLog) buildEventLog() {
@@ -92,6 +94,8 @@ func (this *EevyLog) buildEventLog() {
 	evtLeveled := logging.AddModuleLevel(evtBeFormatter)
 	evtLeveled.SetLevel(logging.DEBUG, "")
 	this.EventLog.SetBackend(evtLeveled)
+
+	this.Debug("Event log created: %s", this.Config.GetEventPath())
 }
 
 func (this *EevyLog) buildHandlerLog() {
@@ -108,6 +112,8 @@ func (this *EevyLog) buildHandlerLog() {
 	handLeveled := logging.AddModuleLevel(handBeFormatter)
 	handLeveled.SetLevel(logging.DEBUG, "")
 	this.HandlerLog.SetBackend(handLeveled)
+
+	this.Debug("Handler log created: %s", this.Config.GetEventPath())
 }
 
 func (this *EevyLog) Event(evt logger.Event) {
