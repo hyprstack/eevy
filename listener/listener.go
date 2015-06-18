@@ -37,6 +37,10 @@ func BuildListener(conf config.ListenerList, hl *handler.HandlerList, log logger
 		for _, l := range listners {
 
 			h := hl.Get(l)
+			if h == nil {
+				log.Warning("Could not find handler with name '%s'", l)
+				continue
+			}
 			rootListener.Add(evtName, h)
 		}
 	}
