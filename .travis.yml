@@ -1,5 +1,4 @@
 language: go
-script: make VERSION=$TRAVIS_TAG
 go:
   - 1.4.1
 script:
