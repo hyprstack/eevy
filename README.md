@@ -108,12 +108,11 @@ This listener invokes an AWS Lambda function
 #### Description ####
 This listener performs a local system call
 #### Config ####
-| Name   | Type | Description                                  |
-| ------ | ---- | -------------------------------------------- |
-|type    |string| This must be set to "lambda"                 |
-|function|string| The name of the function to be invoked       |
-|region  |string| The AWS region it belongs to eg "eu-west-1"  |
-|message |string| The body of the request sent to the listener |
+| Name   | Type | Description                                          |
+| ------ | ---- | ---------------------------------------------------- |
+|type    |string| This must be set to "cli"                            |
+|bin     |string| The command to run the function                      |
+|args    |string| The name of the function and its possible variables  |
 
 ### OAuth2 ###
 #### Description ####
